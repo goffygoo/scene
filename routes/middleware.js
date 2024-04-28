@@ -1,6 +1,6 @@
 import Ajv from "ajv";
 import { HEADERS } from "../constants/index.js";
-import AccessModule from "../service/auth/access.js";
+import AuthModule from "../service/auth/index.js";
 
 const ajv = new Ajv();
 
@@ -18,7 +18,7 @@ export const wrapper = fn => async (req, res) => {
 
 export const verifyAccessToken = (req, res, next) => {
     const token = req.headers[HEADERS.AUTHORIZATION];
-    const data = AccessModule.decodeAccessToken(token);
+    const data = AuthModule.decodeAccessToken(token);
     if (!data) {
         return res.sendStatus(401);
     } else {

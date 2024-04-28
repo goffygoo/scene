@@ -1,26 +1,4 @@
 import axios from "axios";
-import { randomUUID, createHash } from "crypto";
-import config from "../constants/config.js";
-
-const { PASSWORD_SALT } = config;
-
-export const generateOtp = () => {
-    let value = Math.ceil(Math.random() * 10000).toString();
-    while (value.length !== 4) {
-        value = '0' + value;
-    }
-    return value;
-}
-
-export const generateRefreshToken = () => {
-    return randomUUID().split('-').join('');
-}
-
-export const processPassword = (password) => {
-    const hash = createHash("sha256");
-    hash.write(password + PASSWORD_SALT);
-    return hash.digest("base64");
-};
 
 const getUpdatedUrl = (url, body = {}) => {
     let newUrl = url;

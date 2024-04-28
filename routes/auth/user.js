@@ -36,7 +36,7 @@ const updateProfileSchema = {
 const router = express.Router();
 
 router.post('/login', wrapper(Module.service.login));
-router.post('/loginOrganiser', wrapper(Module.service.loginOrganiser));
+router.post('/newAccessToken', wrapper(Module.service.newAccessToken));
 router.post('/verifyOtp', wrapper(Module.service.verifyOtp));
 router.post('/googleLogin', wrapper(Module.service.googleLogin));
 router.post(
