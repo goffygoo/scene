@@ -1,5 +1,6 @@
-import user from "./user.js";
+import admin from "./admin.js";
 import organiser from "./organiser.js";
+import user from "./user.js";
 import {
   decodeAccessToken,
   generateAccessToken,
@@ -9,11 +10,12 @@ import {
 } from "./utils.js";
 
 export default {
-  user,
+  admin,
   organiser,
-  generateAccessToken,
-  generateRefreshToken,
+  user,
   decodeAccessToken,
-  processPassword,
+  generateAccessToken,
   generateOtp,
+  generateRefreshToken,
+  processPassword,
 };

@@ -1,7 +1,7 @@
 import { REFRESH_TOKEN_EXPIRE_TIME } from "../../constants/index.js";
-import OrganiserOtp from "../../model/OrganiserOtp.js";
+import AdminOtp from "../../model/AdminOtp.js";
 import { sendOtpResetPassword } from "../../util/mail/index.js";
-import Organiser from "../../model/Organiser.js";
+import Admin from "../../model/Admin.js";
 import {
   decodeAccessToken,
   generateAccessToken,
@@ -18,17 +18,13 @@ const forgotPassword = async ({ body }) => {
   try {
     session = await db.startSession();
     session.startTransaction();
-    const organiser = await Organiser.findOneAndSelect(
-      { email },
-      { _id: 1 },
-      session
-    );
-    if (!organiser) {
+    const admin = await Admin.findOneAndSelect({ email }, { _id: 1 }, session);
+    if (!admin) {
       throw Error();
     }
     const OTP = generateOtp();
-    await OrganiserOtp.deleteOne({ email }, session);
-    await OrganiserOtp.create(
+    await AdminOtp.deleteOne({ email }, session);
+    await AdminOtp.create(
       [
         {
           email,
@@ -49,9 +45,9 @@ const forgotPassword = async ({ body }) => {
 
 const verifyOtp = async ({ body }) => {
   const { otp, email } = body;
-  const otpObject = await OrganiserOtp.findOne({ email });
+  const otpObject = await AdminOtp.findOne({ email });
   if (!otpObject || otpObject.value !== otp) throw Error();
-  await OrganiserOtp.deleteOne({ email });
+  await AdminOtp.deleteOne({ email });
   const resetToken = generateAccessToken({
     email,
     resetPassword: true,
@@ -68,7 +64,7 @@ const resetPassword = async ({ body }) => {
   if (!resetPassword) throw Error();
   const refreshToken = generateRefreshToken();
   const tokenEAT = Date.now() + REFRESH_TOKEN_EXPIRE_TIME;
-  await Organiser.findOneAndUpdate(
+  await Admin.findOneAndUpdate(
     { email },
     {
       password: processPassword(password),
@@ -80,14 +76,13 @@ const resetPassword = async ({ body }) => {
 
 const login = async ({ body }) => {
   const { email, password } = body;
-  const organiser = await Organiser.findOne({ email });
-  if (!organiser || organiser.password !== processPassword(password))
-    throw Error();
-  const { _id: userId, refreshToken } = organiser;
+  const admin = await Admin.findOne({ email });
+  if (!admin || admin.password !== processPassword(password)) throw Error();
+  const { _id: userId, refreshToken } = admin;
   const accessToken = generateAccessToken({
     userId,
     email,
-    organiser: true,
+    admin: true,
   });
   return {
     refreshToken,

@@ -18,4 +18,4 @@ const Schema = new mongoose.Schema({
     }
 });
 
-export default modelWrapper(mongoose.model("Otp", Schema));
+export default modelWrapper(mongoose.model("UserOtp", Schema));

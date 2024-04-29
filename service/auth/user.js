@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../../model/User.js";
-import Otp from "../../model/Otp.js";
+import Otp from "../../model/UserOtp.js";
 import db from "../../util/db.js";
 import { generateOtp, generateRefreshToken } from "./utils.js";
 import { httpRequest } from "../../util/index.js";
