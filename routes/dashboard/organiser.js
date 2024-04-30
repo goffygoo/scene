@@ -5,6 +5,6 @@ import { wrapper } from "../middleware.js";
 
 const router = express.Router();
 
-router.post("/addorganiser", wrapper(Module.service.addOrganiser));
+router.post("/add", wrapper(Module.service.add));
 
 export default router;

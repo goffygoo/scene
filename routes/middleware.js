@@ -27,10 +27,10 @@ export const verifyAccessToken = (req, res, next) => {
   }
 };
 
-export const verifyOrganiser = (_req, res, next) => {
+export const verifyAdmin = (_req, res, next) => {
   const { userData } = res.locals;
-  const { organiser } = userData;
-  if (!organiser) {
+  const { admin } = userData;
+  if (!admin) {
     return res.sendStatus(401);
   } else {
     return next();

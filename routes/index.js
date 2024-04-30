@@ -2,7 +2,7 @@ import express from "express";
 import auth from "./auth/index.js";
 import app from "./app/index.js";
 import dashboard from "./dashboard/index.js";
-import { verifyAccessToken, verifyOrganiser } from "./middleware.js";
+import { verifyAccessToken, verifyAdmin } from "./middleware.js";
 
 const router = express.Router();
 
@@ -12,6 +12,6 @@ router.get("/", (_req, res) => {
 
 router.use("/auth", auth);
 router.use("/app", app);
-router.use("/dashboard", verifyAccessToken, verifyOrganiser, dashboard);
+router.use("/dashboard", verifyAccessToken, verifyAdmin, dashboard);
 
 export default router;
