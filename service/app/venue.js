@@ -2,7 +2,7 @@ import Venue from "../../model/Venue.js";
 import { saveFilesBulk } from "../../util/files.js";
 import cities from "../../constants/cities.js";
 
-const POST = async ({ body }) => {
+const POST = async ({ body, locals }) => {
   const {
     bannerImage,
     name,
@@ -14,6 +14,7 @@ const POST = async ({ body }) => {
     gallery,
     logo,
   } = body;
+  const { userId: creator } = locals.userData;
   await createVenue({
     bannerImage,
     name,
@@ -24,6 +25,7 @@ const POST = async ({ body }) => {
     location,
     gallery,
     logo,
+    creator,
   });
 };
 
@@ -37,6 +39,7 @@ const createVenue = async ({
   location,
   gallery,
   logo,
+  creator,
 }) => {
   if (!cities[city]) throw Error("Invalid city");
   const imageArray = [logo, ...gallery, bannerImage];
@@ -51,6 +54,7 @@ const createVenue = async ({
     location,
     gallery,
     logo,
+    creator,
   });
   return venue;
 };
