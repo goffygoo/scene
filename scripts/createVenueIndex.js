@@ -62,7 +62,7 @@ await httpRequest(
       "id",
     ],
     searchableAttributes: [
-      "shortName",
+      "abbreviation",
       "name",
       "keywords",
     ],
