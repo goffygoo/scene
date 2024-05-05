@@ -7,5 +7,7 @@ const router = express.Router();
 
 router.use('/venue', venue);
 router.get('/cities', wrapper(Module.service.getCities));
+router.get('/types', wrapper(Module.service.getTypes));
+
 
 export default router;
