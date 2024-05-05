@@ -5,7 +5,7 @@ const schema = {
     type: "object",
     properties: {
         id: { type: "string" },
-        shortName: { type: "string" },
+        abbreviation: { type: "string" },
         name: { type: "string" },
         type: { type: "string" },
         keywords: {
@@ -23,7 +23,7 @@ const schema = {
     },
     required: [
         "id",
-        "shortName",
+        "abbreviation",
         "name",
         "type",
         "keywords",

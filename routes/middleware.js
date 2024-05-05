@@ -37,6 +37,16 @@ export const verifyAdmin = (_req, res, next) => {
   }
 };
 
+export const verifyOrganiser = (_req, res, next) => {
+  const { userData } = res.locals;
+  const { organiser } = userData;
+  if (!organiser) {
+    return res.sendStatus(401);
+  } else {
+    return next();
+  }
+};
+
 export const validateSchema = (schema) => (req, res, next) => {
   const validate = ajv.compile(schema);
   const valid = validate(req.body);

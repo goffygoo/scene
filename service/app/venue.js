@@ -3,49 +3,61 @@ import { saveFilesBulk } from "../../util/files.js";
 import cities from "../../constants/cities.js";
 
 const POST = async ({ body }) => {
-    const {
-        name,
-        address,
-        city,
-        logo,
-        gallery,
-        banner
-    } = body;
-    await createVenue({
-        name,
-        city,
-        address,
-        logo,
-        gallery,
-        banner
-    });
-}
-
-const createVenue = async ({
+  const {
+    bannerImage,
     name,
+    abbreviation,
+    type,
     city,
     address,
-    logo,
+    location,
     gallery,
-    banner
+    logo,
+  } = body;
+  await createVenue({
+    bannerImage,
+    name,
+    abbreviation,
+    type,
+    city,
+    address,
+    location,
+    gallery,
+    logo,
+  });
+};
+
+const createVenue = async ({
+  bannerImage,
+  name,
+  abbreviation,
+  type,
+  city,
+  address,
+  location,
+  gallery,
+  logo,
 }) => {
-    if (!cities[city]) throw Error('Invalid city');
-    const imageArray = [logo, ...gallery, banner];
-    await saveFilesBulk(imageArray);
-    const venue = await Venue.create({
-        name,
-        city,
-        address,
-        logo,
-        gallery,
-        banner
-    });
-    return venue;
-}
+  if (!cities[city]) throw Error("Invalid city");
+  const imageArray = [logo, ...gallery, bannerImage];
+  await saveFilesBulk(imageArray);
+  const venue = await Venue.create({
+    bannerImage,
+    name,
+    abbreviation,
+    type,
+    city,
+    address,
+    location,
+    gallery,
+    logo,
+  });
+  return venue;
+};
 
 export default {
-    service: {
-        POST,
-    },
-    createVenue
-}
+  service: {
+    POST,
+  },
+  createVenue,
+};
