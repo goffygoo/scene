@@ -23,11 +23,6 @@ const Schema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    type: {
-        type: String,
-        enum: [VENUE_TYPE.COLLEGE],
-        default: VENUE_TYPE.COLLEGE,
-    },
     logo: {
         type: String,
         required: true,

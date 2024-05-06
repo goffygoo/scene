@@ -16,6 +16,16 @@ export const wrapper = (fn) => async (req, res) => {
   }
 };
 
+export const parseAppConfig = (req, res, next) => {
+  const cityKey = req.headers[HEADERS.CITY_KEY];
+  const bundleVersion = req.headers[HEADERS.BUNDLE_VERSION];
+  const device = req.headers[HEADERS.DEVICE];
+  res.locals.cityKey = cityKey;
+  res.locals.bundleVersion = bundleVersion;
+  res.locals.device = device;
+  return next();
+};
+
 export const verifyAccessToken = (req, res, next) => {
   const token = req.headers[HEADERS.AUTHORIZATION];
   const data = AuthModule.decodeAccessToken(token);
@@ -56,3 +66,4 @@ export const validateSchema = (schema) => (req, res, next) => {
     return next();
   }
 };
+

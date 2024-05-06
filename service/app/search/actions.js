@@ -1,5 +1,5 @@
-import config from "../../constants/config.js";
-import { httpRequest } from "../../util/index.js";
+import config from "../../../constants/config.js";
+import { httpRequest } from "../../../util/index.js";
 
 const { SEARCH_ENGINE, MEILISEARCH_SECRET_KEY } = config;
 
@@ -36,20 +36,36 @@ const getDocumentById = async (id, index) => {
     );
 }
 
-const searchQuery = async (query, index) => {
+const searchQuery = async ({ query, filter, sort, limit = 20 }, index) => {
     return httpRequest(
         "post",
         `${SEARCH_ENGINE}/indexes/${index}/search`,
         {
-            q: query
+            q: query,
+            filter,
+            sort,
+            limit
         },
         searchConfig
     );
 }
+
+const multiSearchQuery = async (queries) => {
+    return httpRequest(
+        "post",
+        `${SEARCH_ENGINE}/multi-search`,
+        {
+            queries
+        },
+        searchConfig
+    );
+}
+
 
 export {
     getDocumentById,
     addOrReplace,
     addOrUpdate,
     searchQuery,
+    multiSearchQuery,
 };
