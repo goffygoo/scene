@@ -15,11 +15,10 @@ export const ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 15;
 
 export const HEADERS = {
     AUTHORIZATION: "authorization",
+    CITY_KEY: "x-citykey",
+    BUNDLE_VERSION: "x-bundleversion",
+    DEVICE: "x-device",
 };
-
-export const VENUE_TYPE = {
-    COLLEGE: 'College',
-}
 
 export const MODEL_INDEX = {
     EVENT: "event",

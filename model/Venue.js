@@ -1,11 +1,15 @@
 import mongoose from "mongoose";
-import { VENUE_TYPE } from "../constants/index.js";
 import modelWrapper from "./modelWrapper.js";
+import { types } from "../constants/liveConfig.js";
 
 const { ObjectId } = mongoose.Schema.Types;
 
 const Schema = new mongoose.Schema({
   name: {
+    type: String,
+    required: true,
+  },
+  abbreviation: {
     type: String,
     required: true,
   },
@@ -26,8 +30,8 @@ const Schema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: [VENUE_TYPE.COLLEGE],
-    default: VENUE_TYPE.COLLEGE,
+    enum: [types.college.title],
+    default: types.college.title,
   },
   logo: {
     type: String,
@@ -48,9 +52,6 @@ const Schema = new mongoose.Schema({
   creator: {
     type: ObjectId,
     required: true,
-  },
-  creator: {
-    type: ObjectId,
   },
 });
 

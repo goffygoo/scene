@@ -1,14 +1,13 @@
-import { MODEL_INDEX } from "../../../constants/index.js";
+import { MODEL_INDEX } from "../../../../constants/index.js";
 import engine from "../engine.js";
 
 const schema = {
     type: "object",
     properties: {
         id: { type: "string" },
-        venueId: { type: "string" },
+        abbreviation: { type: "string" },
         name: { type: "string" },
-        time: { type: "number" },
-        boost: { type: "number" },
+        type: { type: "string" },
         keywords: {
             type: "array",
             items: {
@@ -20,18 +19,18 @@ const schema = {
             items: {
                 type: "string",
             },
-        },
+        }
     },
     required: [
         "id",
-        "venueId",
+        "abbreviation",
         "name",
-        "time",
-        "boost",
+        "type",
         "keywords",
         "tags",
     ],
     additionalProperties: false,
 };
-const Event = engine(schema, MODEL_INDEX.EVENT);
-export default Event;
+
+const Venue = engine(schema, MODEL_INDEX.VENUE);
+export default Venue;

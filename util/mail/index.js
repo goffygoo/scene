@@ -20,13 +20,8 @@ const sendMailToUser = async (email, subject, html) => {
             subject,
             html,
         };
-        transporter.sendMail(mailOptions, (error, _info) => {
-            if (error) {
-                return console.log(error);
-            }
-        });
-    } catch (_e) {
-    }
+        transporter.sendMail(mailOptions, () => undefined);
+    } catch (_e) {}
 };
 
 export const sendOtpMail = async (email, otp) => {

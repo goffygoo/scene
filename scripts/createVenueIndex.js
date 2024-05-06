@@ -1,8 +1,9 @@
 import config from "../constants/config.js";
 import { MODEL_INDEX } from "../constants/index.js";
 import { httpRequest } from "../util/index.js";
+import SearchModule from "../service/app/search/index.js";
 
-const indexUid = MODEL_INDEX.VENUE + '_' + process.env.CITY_KEY;
+const indexUid = SearchModule.getIndexKey(MODEL_INDEX.VENUE, process.env.CITY_KEY);
 
 const { SEARCH_ENGINE, MEILISEARCH_SECRET_KEY } = config;
 

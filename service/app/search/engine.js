@@ -1,9 +1,8 @@
 import Ajv from "ajv";
 import { addOrReplace, addOrUpdate, getDocumentById, searchQuery } from './actions.js';
+import { getIndexKey } from "./util.js";
 
 const ajv = new Ajv();
-
-const getIndexKey = (index, city) => index + '_' + city;
 
 export default (schema, index) => {
     return class Model {
@@ -32,8 +31,9 @@ export default (schema, index) => {
             return addOrUpdate([data], getIndexKey(this.index, city));
         }
 
-        static async searchQuery(query, city) {
-            return searchQuery(query, getIndexKey(this.index, city));
+        static async searchQuery({ query, filter, sort, limit }, city) {
+            const response = await searchQuery({ query, filter, sort, limit }, getIndexKey(this.index, city));
+            return response.hits;
         }
     }
 }

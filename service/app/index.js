@@ -1,6 +1,5 @@
 import venue from "./venue.js"
-import cities from "../../constants/cities.js";
-import types from "../../constants/types.js";
+import { cities, types } from "../../constants/liveConfig.js";
 
 const getCities = async () => {
     return Object.values(cities);
