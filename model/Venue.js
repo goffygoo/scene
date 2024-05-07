@@ -45,6 +45,14 @@ const Schema = new mongoose.Schema({
     type: [String],
     default: [],
   },
+  tags: {
+    type: [String],
+    default: [],
+  },
+  keywords: {
+    type: [String],
+    default: [],
+  },
   events: {
     type: [{ type: ObjectId, ref: "Event" }],
     default: [],
@@ -52,6 +60,9 @@ const Schema = new mongoose.Schema({
   creator: {
     type: ObjectId,
     required: true,
+  },
+  approver: {
+    type: ObjectId,
   },
 });
 

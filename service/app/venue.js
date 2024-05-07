@@ -1,6 +1,7 @@
 import Venue from "../../model/Venue.js";
 import { saveFilesBulk } from "../../util/files.js";
 import { cities, types } from "../../constants/liveConfig.js";
+import VenueMS from "./search/model/Venue.js";
 
 const POST = async ({ body, locals }) => {
   const {
@@ -60,9 +61,33 @@ const createVenue = async ({
   return venue;
 };
 
+const approveVenue = async (venueId, approver) => {
+  const venue = await Venue.findByIdAndUpdate(venueId, {
+    approver,
+    verified: true,
+  });
+  await VenueMS.createOrReplaceOne(
+    {
+      id: venue._id.toString(),
+      abbreviation: venue.abbreviation,
+      name: venue.name,
+      type: venue.type,
+      keywords: venue.keywords,
+      tags: venue.tags,
+    },
+    venue.city
+  );
+};
+
+const getPendingVenues = async () => {
+  return Venue.find({ verified: false });
+};
+
 export default {
   service: {
     POST,
   },
   createVenue,
+  approveVenue,
+  getPendingVenues,
 };

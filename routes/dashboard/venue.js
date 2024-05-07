@@ -6,5 +6,6 @@ import { wrapper } from "../middleware.js";
 const router = express.Router();
 
 router.post("/approve", wrapper(Module.service.approve));
+router.get("/pendingvenues", wrapper(Module.service.getVenues));
 
 export default router;
