@@ -8,32 +8,47 @@ const Schema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    city: {
+    venue: {
+        type: { type: ObjectId, ref: "Venue" },
+        required: true,
+    },
+    time: {
+        type: Date,
+        required: true,
+    },
+    price: {
+        type: Number,
+        required: true,
+    },
+    about: {
         type: String,
         required: true,
     },
-    address: {
+    note: {
         type: String,
-        required: true,
-    },
-    location: {
-        type: Object,
-    },
-    verified: {
-        type: Boolean,
-        default: false,
     },
     logo: {
         type: String,
-        required: true,
     },
-    banner: {
+    bannerImage: {
         type: String,
         required: true,
     },
     gallery: {
         type: [String],
         default: [],
+    },
+    tags: {
+        type: [String],
+        default: [],
+    },
+    keywords: {
+        type: [String],
+        default: [],
+    },
+    creator: {
+        type: ObjectId,
+        required: true,
     },
 });
 
