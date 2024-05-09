@@ -6,6 +6,14 @@ const find = (Model) => async (data, session) => {
     return result;
 }
 
+const findAndPopulate = (Model) => async (data, field, session) => {
+    const promise = session ?
+        Model.find(data).populate(field).session(session) :
+        Model.find(data).populate(field);
+    const result = await promise;
+    return result;
+}
+
 const findAndSelect = (Model) => async (data, select, session) => {
     const promise = session ?
         Model.find(data).select(select).session(session) :
@@ -82,6 +90,7 @@ const deleteOne = (Model) => async (data, session) => {
 const Wrapper = (Model) => {
     return {
         find: find(Model),
+        findAndPopulate: findAndPopulate(Model),
         findAndSelect: findAndSelect(Model),
         findOne: findOne(Model),
         findOneAndSelect: findOneAndSelect(Model),

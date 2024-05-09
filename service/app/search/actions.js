@@ -36,6 +36,15 @@ const getDocumentById = async (id, index) => {
     );
 }
 
+const deleteDocumentById = async (id, index) => {
+    return httpRequest(
+        "delete",
+        `${SEARCH_ENGINE}/indexes/${index}/documents/${id}`,
+        {},
+        searchConfig
+    );
+}
+
 const searchQuery = async ({ query, filter, sort, limit = 20 }, index) => {
     return httpRequest(
         "post",
@@ -64,6 +73,7 @@ const multiSearchQuery = async (queries) => {
 
 export {
     getDocumentById,
+    deleteDocumentById,
     addOrReplace,
     addOrUpdate,
     searchQuery,
