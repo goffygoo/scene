@@ -1,5 +1,5 @@
 import Ajv from "ajv";
-import { addOrReplace, addOrUpdate, getDocumentById, searchQuery } from './actions.js';
+import { addOrReplace, addOrUpdate, deleteDocumentById, getDocumentById, searchQuery } from './actions.js';
 import { getIndexKey } from "./util.js";
 
 const ajv = new Ajv();
@@ -29,6 +29,10 @@ export default (schema, index) => {
 
         static async updateOne(data, city) {
             return addOrUpdate([data], getIndexKey(this.index, city));
+        }
+
+        static async deleteById(id, city) {
+            return deleteDocumentById(id, getIndexKey(this.index, city));
         }
 
         static async searchQuery({ query, filter, sort, limit }, city) {

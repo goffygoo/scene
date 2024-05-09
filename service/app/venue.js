@@ -1,6 +1,6 @@
 import Venue from "../../model/Venue.js";
-import { saveFilesBulk } from "../../util/files.js";
-import { cities, types } from "../../constants/liveConfig.js";
+import { deleteFilesBulk, saveFilesBulk } from "../../util/files.js";
+import { cities, types, venueTags } from "../../constants/liveConfig.js";
 import VenueMS from "./search/model/Venue.js";
 
 const POST = async ({ body, locals }) => {
@@ -9,6 +9,7 @@ const POST = async ({ body, locals }) => {
     name,
     abbreviation,
     type,
+    tags,
     city,
     address,
     location,
@@ -22,6 +23,7 @@ const POST = async ({ body, locals }) => {
     abbreviation,
     type,
     city,
+    tags,
     address,
     location,
     gallery,
@@ -40,10 +42,15 @@ const createVenue = async ({
   location,
   gallery,
   logo,
+  keywords,
+  tags,
   creator,
 }) => {
   if (!cities[city]) throw Error("Invalid city");
   if (!types[type]) throw Error("Invalid type");
+  for (const tag of tags) {
+    if (!venueTags[tag]) throw Error('Invalid tag');
+  }
   const imageArray = [logo, ...gallery, bannerImage];
   await saveFilesBulk(imageArray);
   const venue = await Venue.create({
@@ -56,6 +63,8 @@ const createVenue = async ({
     location,
     gallery,
     logo,
+    keywords,
+    tags,
     creator,
   });
   return venue;
@@ -83,11 +92,85 @@ const getPendingVenues = async () => {
   return Venue.find({ verified: false });
 };
 
+const getVenue = async (venueId) => {
+  return Venue.findById(venueId);
+}
+
+const updateVenue = async (venueId, venueData) => {
+  const {
+    bannerImage,
+    name,
+    abbreviation,
+    type,
+    address,
+    location,
+    gallery,
+    logo,
+    keywords,
+    tags,
+  } = venueData;
+  const venue = await getVenue(venueId);
+  const city = venue.city;
+  const deleteImages = [], createImages = [];
+  if (bannerImage && bannerImage !== venue.bannerImage) {
+    deleteImages.push(venue.bannerImage);
+    createImages.push(bannerImage);
+  }
+  if (logo && logo !== venue.logo) {
+    deleteImages.push(venue.logo);
+    createImages.push(logo);
+  }
+  const oldGallerySet = new Set(venue.gallery);
+  const newGallerySet = new Set(gallery);
+  for (const img of oldGallerySet) {
+    if (!newGallerySet.has(img)) {
+      deleteImages.push(img);
+    }
+  }
+  for (const img of newGallerySet) {
+    if (!oldGallerySet.has(img)) {
+      createImages.push(img);
+    }
+  }
+  await saveFilesBulk(createImages);
+  await deleteFilesBulk(deleteImages);
+
+  await VenueMS.createOrReplaceOne(
+    {
+      id: venueId,
+      abbreviation: abbreviation || venue.abbreviation,
+      name: name || venue.name,
+      type: type || venue.type,
+      keywords: keywords || venue.keywords,
+      tags: tags || venue.tags,
+    },
+    city
+  );
+
+  return Venue.findByIdAndUpdate(venueId, {
+    ...(bannerImage && { bannerImage }),
+    ...(name && { name }),
+    ...(address && { address }),
+    ...(location && { location }),
+    ...(gallery && { gallery }),
+    ...(tags && { tags }),
+    ...(keywords && { keywords }),
+    ...(logo && { logo }),
+  });
+}
+
+const deleteVenue = async (venueId) => {
+  return Venue.deleteOne({ _id: venueId });
+}
+
 export default {
   service: {
     POST,
   },
   createVenue,
+  getVenue,
   approveVenue,
   getPendingVenues,
+  updateVenue,
+  deleteVenue,
 };

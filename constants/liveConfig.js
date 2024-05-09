@@ -37,6 +37,9 @@ export const eventTags = {
     title: "Cultural Fest",
     code: "culturalfest",
   },
+};
+
+export const eventTagsSpecial = {
   toprated: {
     title: "Top Rated",
     code: "toprated",

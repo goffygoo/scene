@@ -6,7 +6,7 @@ const ajv = new Ajv();
 
 export const wrapper = (fn) => async (req, res) => {
   try {
-    const body = req.body;
+    const body = { ...req.body, ...req.query };
     const locals = res.locals;
     const response = await fn({ body, locals });
     return res.send(response);

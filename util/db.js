@@ -3,7 +3,7 @@ import config from '../constants/config.js';
 
 const { MONGO_URL } = config;
 
-mongoose.connect(MONGO_URL, { dbName: 'project-w' });
+mongoose.connect(MONGO_URL, { dbName: 'test-DB' });
 
 const db = mongoose.connection;
 

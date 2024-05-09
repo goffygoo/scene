@@ -1,4 +1,4 @@
-import { eventTags, timeTags, venueTags } from "../../../constants/liveConfig.js";
+import { eventTags, eventTagsSpecial, timeTags, venueTags } from "../../../constants/liveConfig.js";
 import VenueMS from "./model/Venue.js";
 import EventMS from "./model/Event.js";
 import { getIndexKey, getVenueAndEvents } from "./util.js";
@@ -12,7 +12,7 @@ const getLabels = async () => {
             id: "event",
             params: {
                 time: Object.values(timeTags),
-                tags: Object.values(eventTags)
+                tags: [...Object.values(eventTags), ...Object.values(eventTagsSpecial)]
             }
         },
         {
@@ -95,7 +95,7 @@ const POST = async ({ body, locals }) => {
             _id: { $in: eventIds }
         }, {
             name: 1,
-            banner: 1,
+            time: 1,
         });
         return events;
     } else {
@@ -126,12 +126,11 @@ const POST = async ({ body, locals }) => {
                 address: 1,
                 bannerImage: 1,
             }),
-            Event.findAndSelect({
+            Event.findAndPopulate({
                 _id: { $in: allEventIds }
-            }, {
-                name: 1,
-                banner: 1,
-            })
+            },
+                "venue",
+            )
         ]);
 
         let venueLength = allVenues.length, venueIdx = 0;
@@ -143,14 +142,14 @@ const POST = async ({ body, locals }) => {
         for (let i = 0; i < allEvents.length; i++) {
             eventsMap[allEvents[i]._id] = i;
         }
-   
-        console.log(allVenues, allEvents)
+
+        console.log(allEvents)
         const searchResults = [];
         while (searchResults.length < totalResults) {
             let eventItr = 0
             while (eventIdx < eventLength && eventItr++ < 2) {
                 searchResults.push(allEvents[eventsMap[eventIds[eventIdx++]]]);
-            } 
+            }
 
             if (mappedEventIdx < mappedEventLength) {
                 searchResults.push(allEvents[eventsMap[mappedEventIds[mappedEventIdx++]]]);

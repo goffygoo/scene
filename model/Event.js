@@ -8,7 +8,7 @@ const Schema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  venue: {
+  venueId: {
     type: ObjectId,
     required: true,
     ref: "Venue",
@@ -42,6 +42,14 @@ const Schema = new mongoose.Schema({
   tags: {
     type: [String],
     default: [],
+  },
+  specialTags: {
+    type: [String],
+    default: [],
+  },
+  boost: {
+    type: Number,
+    default: 1,
   },
   keywords: {
     type: [String],
