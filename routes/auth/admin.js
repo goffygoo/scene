@@ -8,5 +8,6 @@ router.post('/login', wrapper(Module.service.login));
 router.post('/forgotPassword', wrapper(Module.service.forgotPassword));
 router.post('/verifyOtp', wrapper(Module.service.verifyOtp));
 router.post('/resetPassword', wrapper(Module.service.resetPassword));
+router.post('/newAccessToken', wrapper(Module.service.newAccessToken));
 
 export default router;

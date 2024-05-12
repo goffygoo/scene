@@ -2,6 +2,7 @@ import Venue from "../../model/Venue.js";
 import { deleteFilesBulk, saveFilesBulk } from "../../util/files.js";
 import { cities, types, venueTags } from "../../constants/liveConfig.js";
 import VenueMS from "./search/model/Venue.js";
+import VenueUpdate from "../../model/VenueUpdate.js";
 
 const POST = async ({ body, locals }) => {
   const {
@@ -10,29 +11,93 @@ const POST = async ({ body, locals }) => {
     abbreviation,
     type,
     tags,
+    keywords,
     city,
     address,
     location,
     gallery,
     logo,
   } = body;
-  const { userId: creator } = locals.userData;
-  await createVenue({
+  const { userId: editor } = locals.userData;
+  const imageArray = [logo, ...gallery, bannerImage];
+  await saveFilesBulk(imageArray);
+  return createVenue({
     bannerImage,
     name,
     abbreviation,
     type,
     city,
     tags,
+    keywords,
     address,
     location,
     gallery,
     logo,
-    creator,
+    editor,
+  });
+};
+
+const PATCH = async ({ body, locals }) => {
+  const {
+    venueId,
+    bannerImage,
+    name,
+    abbreviation,
+    type,
+    tags,
+    keywords,
+    gallery,
+    logo,
+  } = body;
+  const { userId: editor } = locals.userData;
+  const venue = await getVenue(venueId);
+  if (!venue) throw Error('Invalid Venue');
+  const deleteImages = [], createImages = [];
+  if (bannerImage && bannerImage !== venue.bannerImage) {
+    deleteImages.push(venue.bannerImage);
+    createImages.push(bannerImage);
+  }
+  if (logo && logo !== venue.logo) {
+    deleteImages.push(venue.logo);
+    createImages.push(logo);
+  }
+  if (gallery) {
+    const oldGallerySet = new Set(venue.gallery);
+    const newGallerySet = new Set(gallery);
+    for (const img of oldGallerySet) {
+      if (!newGallerySet.has(img)) {
+        deleteImages.push(img);
+      }
+    }
+    for (const img of newGallerySet) {
+      if (!oldGallerySet.has(img)) {
+        createImages.push(img);
+      }
+    }
+  }
+  await saveFilesBulk(createImages);
+  await deleteFilesBulk(deleteImages);
+  console.log({
+    tags,
+    keywords,
+    gallery,
+  })
+  return createVenue({
+    parent: venueId,
+    bannerImage,
+    name,
+    abbreviation,
+    type,
+    tags,
+    keywords,
+    gallery,
+    logo,
+    editor,
   });
 };
 
 const createVenue = async ({
+  parent,
   bannerImage,
   name,
   abbreviation,
@@ -44,52 +109,108 @@ const createVenue = async ({
   logo,
   keywords,
   tags,
-  creator,
+  editor,
 }) => {
-  if (!cities[city]) throw Error("Invalid city");
-  if (!types[type]) throw Error("Invalid type");
-  for (const tag of tags) {
-    if (!venueTags[tag]) throw Error('Invalid tag');
+  if (cities[city] && !cities[city]) throw Error("Invalid city");
+  if (types[type] && !types[type]) throw Error("Invalid type");
+  if (tags) {
+    for (const tag of tags) {
+      if (!venueTags[tag]) throw Error('Invalid tag');
+    }
   }
-  const imageArray = [logo, ...gallery, bannerImage];
-  await saveFilesBulk(imageArray);
-  const venue = await Venue.create({
+  return VenueUpdate.create({
+    ...(parent && { parent }),
+    ...(bannerImage && { bannerImage }),
+    ...(name && { name }),
+    ...(abbreviation && { abbreviation }),
+    ...(type && { type }),
+    ...(city && { city }),
+    ...(address && { address }),
+    ...(location && { location }),
+    ...(gallery && { gallery }),
+    ...(logo && { logo }),
+    ...(keywords && { keywords }),
+    ...(tags && { tags }),
+    ...(editor && { editor })
+  });
+};
+
+const approveVenue = async (venueId, approver) => {
+  const updateList = await VenueUpdate.findAndPopulate({ _id: venueId }, 'parent');
+  if (!updateList || updateList.length === 0) throw Error('Invalid Venue');
+  const updateVenue = updateList[0];
+  if (!updateVenue.parent) {
+    const venue = await Venue.create({
+      bannerImage: updateVenue.bannerImage,
+      name: updateVenue.name,
+      type: updateVenue.type,
+      city: updateVenue.city,
+      abbreviation: updateVenue.abbreviation,
+      address: updateVenue.address,
+      location: updateVenue.location,
+      gallery: updateVenue.gallery,
+      logo: updateVenue.logo,
+      keywords: updateVenue.keywords,
+      tags: updateVenue.tags,
+      editor: updateVenue.editor,
+      approver,
+    });
+    await VenueMS.createOrReplaceOne(
+      {
+        id: venue._id.toString(),
+        abbreviation: venue.abbreviation,
+        name: venue.name,
+        type: venue.type,
+        keywords: venue.keywords,
+        tags: venue.tags,
+      },
+      venue.city
+    );
+    return VenueUpdate.deleteOne({ _id: venueId });
+  }
+  const originalVenueId = updateVenue.parent._id.toString();
+  const cityKey = updateVenue.parent.city;
+  const {
     bannerImage,
     name,
     abbreviation,
     type,
-    city,
-    address,
-    location,
+    tags,
+    keywords,
     gallery,
     logo,
-    keywords,
-    tags,
-    creator,
-  });
-  return venue;
-};
-
-const approveVenue = async (venueId, approver) => {
-  const venue = await Venue.findByIdAndUpdate(venueId, {
-    approver,
-    verified: true,
-  });
-  await VenueMS.createOrReplaceOne(
+    editor
+  } = updateVenue;
+  await Venue.findByIdAndUpdate(
+    originalVenueId,
     {
-      id: venue._id.toString(),
-      abbreviation: venue.abbreviation,
-      name: venue.name,
-      type: venue.type,
-      keywords: venue.keywords,
-      tags: venue.tags,
+      ...(bannerImage && { bannerImage }),
+      ...(name && { name }),
+      ...(abbreviation && { abbreviation }),
+      ...(type && { type }),
+      ...(gallery && { gallery }),
+      ...(logo && { logo }),
+      ...(keywords && { keywords }),
+      ...(tags && { tags }),
+      ...(editor && { editor }),
+      approver,
+    });
+  await VenueMS.updateOne(
+    {
+      id: originalVenueId,
+      ...(abbreviation && { abbreviation }),
+      ...(name && { name }),
+      ...(type && { type }),
+      ...(keywords && { keywords }),
+      ...(tags && { tags }),
     },
-    venue.city
+    cityKey
   );
+  return VenueUpdate.deleteOne({ _id: venueId });
 };
 
 const getPendingVenues = async () => {
-  return Venue.find({ verified: false });
+  return VenueUpdate.findAndPopulate({}, 'parent');
 };
 
 const getVenue = async (venueId) => {
@@ -160,12 +281,18 @@ const updateVenue = async (venueId, venueData) => {
 }
 
 const deleteVenue = async (venueId) => {
-  return Venue.deleteOne({ _id: venueId });
+  const venue = await getVenue(venueId);
+  if (!venue || venue.events?.length > 0) throw Error('Invalid Delete');
+  await Promise.all([
+    VenueMS.deleteById(venueId, venue.city),
+    Venue.deleteOne({ _id: venueId })
+  ])
 }
 
 export default {
   service: {
     POST,
+    PATCH,
   },
   createVenue,
   getVenue,

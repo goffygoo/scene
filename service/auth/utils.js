@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { ACCESS_TOKEN_EXPIRE_TIME } from "../../constants/index.js";
+import { ACCESS_TOKEN_EXPIRE_TIME_IN_SECS } from "../../constants/index.js";
 import config from "../../constants/config.js";
 import { randomUUID, createHash } from "crypto";
 
@@ -7,7 +7,7 @@ const { PASSWORD_SALT, JWT_SECRET_KEY } = config;
 
 export const generateAccessToken = (data) => {
   const accessToken = jwt.sign(data, JWT_SECRET_KEY, {
-    expiresIn: ACCESS_TOKEN_EXPIRE_TIME,
+    expiresIn: ACCESS_TOKEN_EXPIRE_TIME_IN_SECS,
   });
   return accessToken;
 };
