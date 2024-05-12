@@ -91,11 +91,33 @@ const login = async ({ body }) => {
   };
 };
 
+const newAccessToken = async ({ body }) => {
+  const { userId, refreshToken } = body;
+  const admin = await Admin.findByIdAndSelect(userId, {
+    refreshToken: 1,
+    tokenEAT: 1,
+  });
+  if (
+    !(admin && admin.refreshToken === refreshToken && Date.now() < admin.tokenEAT)
+  ) {
+    throw Error("Invalid data");
+  }
+  const accessToken = generateAccessToken({
+    userId,
+    email: admin.email,
+    admin: true,
+  });
+  return {
+    accessToken,
+  };
+};
+
 export default {
   service: {
     login,
     forgotPassword,
     verifyOtp,
     resetPassword,
+    newAccessToken,
   },
 };

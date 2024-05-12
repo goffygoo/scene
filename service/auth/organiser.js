@@ -82,7 +82,7 @@ const login = async ({ body }) => {
   const { email, password } = body;
   const organiser = await Organiser.findOne({ email });
   if (!organiser || organiser.password !== processPassword(password))
-    throw Error();
+    throw Error("Invalid data");
   const { _id: userId, refreshToken } = organiser;
   const accessToken = generateAccessToken({
     userId,
@@ -96,11 +96,33 @@ const login = async ({ body }) => {
   };
 };
 
+const newAccessToken = async ({ body }) => {
+  const { userId, refreshToken } = body;
+  const organiser = await Organiser.findByIdAndSelect(userId, {
+    refreshToken: 1,
+    tokenEAT: 1,
+  });
+  if (
+    !(organiser && organiser.refreshToken === refreshToken && Date.now() < organiser.tokenEAT)
+  ) {
+    throw Error("Invalid data");
+  }
+  const accessToken = generateAccessToken({
+    userId,
+    email: organiser.email,
+    organiser: true,
+  });
+  return {
+    accessToken,
+  };
+};
+
 export default {
   service: {
     login,
     forgotPassword,
     verifyOtp,
     resetPassword,
+    newAccessToken,
   },
 };

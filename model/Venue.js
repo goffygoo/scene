@@ -24,10 +24,6 @@ const Schema = new mongoose.Schema({
   location: {
     type: Object,
   },
-  verified: {
-    type: Boolean,
-    default: false,
-  },
   type: {
     type: String,
     enum: [types.college.title],
@@ -57,7 +53,7 @@ const Schema = new mongoose.Schema({
     type: [{ type: ObjectId, ref: "Event" }],
     default: [],
   },
-  creator: {
+  editor: {
     type: ObjectId,
     required: true,
   },

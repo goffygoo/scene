@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import User from "../../model/User.js";
 import Otp from "../../model/UserOtp.js";
 import db from "../../util/db.js";
-import { generateOtp, generateRefreshToken } from "./utils.js";
+import { generateAccessToken, generateOtp, generateRefreshToken } from "./utils.js";
 import { httpRequest } from "../../util/index.js";
 import { REFRESH_TOKEN_EXPIRE_TIME } from "../../constants/index.js";
 import { sendOtpMail } from "../../util/mail/index.js";
@@ -81,7 +81,7 @@ const verifyOtp = async ({ body }) => {
         refreshToken = user.refreshToken;
       }
     }
-    const accessToken = AccessModule.generateAccessToken({
+    const accessToken = generateAccessToken({
       userId,
       email,
     });
@@ -129,7 +129,7 @@ const googleLogin = async ({ body }) => {
   } else {
     refreshToken = user.refreshToken;
   }
-  const accessToken = AccessModule.generateAccessToken({
+  const accessToken = generateAccessToken({
     userId,
     email,
   });

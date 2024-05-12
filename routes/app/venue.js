@@ -11,4 +11,11 @@ router.post(
   wrapper(Module.service.POST)
 );
 
+router.patch(
+  "/",
+  verifyAccessToken,
+  verifyOrganiser,
+  wrapper(Module.service.PATCH)
+);
+
 export default router;
