@@ -58,7 +58,7 @@ const POST = async ({ body, locals }) => {
     );
     await Venue.findByIdAndUpdate(venueId, {
         $push: { events: event._id }
-    })
+    });
 };
 
 const GET = async ({ body }) => {
