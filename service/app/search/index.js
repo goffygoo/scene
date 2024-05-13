@@ -83,6 +83,7 @@ const POST = async ({ body, locals }) => {
         }, {
             name: 1,
             abbreviation: 1,
+            tags: 1,
             address: 1,
             bannerImage: 1,
         });
