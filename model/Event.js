@@ -8,18 +8,32 @@ const Schema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  venueId: {
+  venue: {
     type: ObjectId,
     required: true,
-    ref: "Venue",
   },
-  time: {
+  startTime: {
+    type: Date,
+    required: true,
+  },
+  endTime: {
     type: Date,
     required: true,
   },
   price: {
     type: Number,
     required: true,
+  },
+  showAds: {
+    type: Boolean,
+  },
+  installApps: {
+    type: [{
+      iOS: String,
+      android: String,
+      name: String,
+      logo: String,
+    }]
   },
   about: {
     type: String,

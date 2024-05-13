@@ -21,11 +21,10 @@ export const saveFilesBulk = async (files) => {
     await request('/saveBulk', { files });
 }
 
-export const deleteFile = async () => {
+export const deleteFile = async (file) => {
     await request('/deleteFile', { file });
 }
 
-export const deleteFilesBulk = async () => {
+export const deleteFilesBulk = async (files) => {
     await request('/deleteFilesBulk', { files });
-
 }

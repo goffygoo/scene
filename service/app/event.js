@@ -9,9 +9,10 @@ const POST = async ({ body, locals }) => {
         bannerImage,
         venueId,
         name,
-        time,
+        startTime,
+        endTime,
         price,
-        boost,
+        about,
         note,
         gallery,
         tags,
@@ -19,50 +20,21 @@ const POST = async ({ body, locals }) => {
         logo,
     } = body;
     const { userId: creator } = locals.userData;
-    const venue = await Venue.findById(venueId);
-    if (!venue) throw Error('Invalid Venue Id');
+    if (startTime >= endTime) throw Error('Invalid time');
     for (const tag of tags) {
         if (!eventTags[tag]) throw Error('Invalid tag');
     }
-    await createEvent({
-        bannerImage,
-        venueId,
-        name,
-        time,
-        price,
-        boost,
-        note,
-        gallery,
-        tags,
-        keywords,
-        logo,
-        creator,
-        cityKey: venue.city,
-    });
-};
-
-const createEvent = async ({
-    bannerImage,
-    venueId,
-    name,
-    time,
-    price,
-    about,
-    note,
-    gallery,
-    tags,
-    keywords,
-    logo,
-    creator,
-    cityKey,
-}) => {
+    const venue = await Venue.findById(venueId);
+    if (!venue) throw Error('Invalid Venue Id');
+    const cityKey = venue.city;
     const imageArray = [logo, ...gallery, bannerImage];
     await saveFilesBulk(imageArray);
     const event = await Event.create({
         bannerImage,
         venueId,
         name,
-        time,
+        startTime,
+        endTime,
         price,
         about,
         note,
@@ -77,14 +49,16 @@ const createEvent = async ({
             id: event._id.toString(),
             venueId,
             name,
-            time,
+            time: startTime,
             boost: event.boost,
             tags,
             keywords,
         },
         cityKey
     );
-    return event;
+    await Venue.findByIdAndUpdate(venueId, {
+        $push: { events: event._id }
+    });
 };
 
 const GET = async ({ body }) => {
@@ -229,7 +203,6 @@ export default {
         GET,
         PATCH,
     },
-    createEvent,
     getEvent,
     deleteEvent,
     updateEvent,
