@@ -12,6 +12,9 @@ router.use('/event', event);
 router.use('/search', search);
 router.get('/cities', wrapper(Module.service.getCities));
 router.get('/types', wrapper(Module.service.getTypes));
-
+router.get('/venuetags', wrapper(Module.service.getVenueTags))
+router.get('/timetags', wrapper(Module.service.getTimeTags))
+router.get('/eventtags', wrapper(Module.service.getEventTags))
+router.get('/specialeventtags', wrapper(Module.service.getSpecialEventTags))
 
 export default router;
