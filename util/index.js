@@ -1,4 +1,5 @@
 import axios from "axios";
+import { randomUUID } from "crypto";
 
 const getUpdatedUrl = (url, body = {}) => {
     let newUrl = url;
@@ -54,4 +55,8 @@ export const httpRequest = async (method, url, body, config) => {
         }
         throw err;
     }
+}
+
+export const randomId = () => {
+    return randomUUID().split("-").join("");
 }

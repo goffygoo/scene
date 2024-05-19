@@ -24,3 +24,5 @@ export const MODEL_INDEX = {
     EVENT: "event",
     VENUE: "venue",
 };
+
+export const S3_BUCKET_ID = "goffygoo-static-images";
