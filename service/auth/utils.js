@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import { ACCESS_TOKEN_EXPIRE_TIME_IN_SECS } from "../../constants/index.js";
 import config from "../../constants/config.js";
-import { randomUUID, createHash } from "crypto";
+import { createHash } from "crypto";
+import { randomId } from "../../util/index.js";
 
 const { PASSWORD_SALT, JWT_SECRET_KEY } = config;
 
@@ -30,7 +31,7 @@ export const generateOtp = () => {
 };
 
 export const generateRefreshToken = () => {
-  return randomUUID().split("-").join("");
+  return randomId();
 };
 
 export const processPassword = (password) => {
