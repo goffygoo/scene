@@ -25,42 +25,18 @@ const POST = async ({ body }) => {
         throw Error('Invalid file size');
     }
 
-    const key = `images/${randomId()}.${extension}`;
+    const key = `${randomId()}.${extension}`;
     await TempImage.create({ key });
 
     return {
         key,
-        url: 'http://localhost:5002/upload'
-    };
-
-    const command = new PutObjectCommand({
-        Bucket: S3_BUCKET_ID,
-        Key: key,
-        ContentLength: size,
-    });
-
-    const url = await getSignedUrl(client, command, { expiresIn: 300 });
-
-    return {
-        key,
-        url
+        url: `http://192.168.1.6:5002/upload?key=${key}`
     };
 }
 
-const saveImage = async (file) => undefined;
-
-const saveImagesBulk = async (files) => undefined;
-
-const deleteImage = async (file) => undefined;
-
-const deleteImagesBulk = async (files) => undefined;
 
 export default {
     service: {
         POST,
     },
-    saveImage,
-    saveImagesBulk,
-    deleteImage,
-    deleteImagesBulk
 };

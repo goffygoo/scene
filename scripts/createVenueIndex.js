@@ -3,23 +3,26 @@ import { MODEL_INDEX } from "../constants/index.js";
 import { httpRequest } from "../util/index.js";
 import SearchModule from "../service/app/search/index.js";
 
-const indexUid = SearchModule.getIndexKey(MODEL_INDEX.VENUE, process.env.CITY_KEY);
+const indexUid = SearchModule.getIndexKey(
+  MODEL_INDEX.VENUE,
+  process.env.CITY_KEY
+);
 
 const { SEARCH_ENGINE, MEILISEARCH_SECRET_KEY } = config;
 
 const axiosConfig = {
   headers: {
-    Authorization: `Bearer ${MEILISEARCH_SECRET_KEY}`
-  }
+    Authorization: `Bearer ${MEILISEARCH_SECRET_KEY}`,
+  },
 };
 
-console.log('Index initiation started');
+console.log("Index initiation started");
 const initiationData = await httpRequest(
   "post",
   `${SEARCH_ENGINE}/indexes`,
   {
     uid: indexUid,
-    primaryKey: "id"
+    primaryKey: "id",
   },
   axiosConfig
 );
@@ -27,7 +30,7 @@ const initiationData = await httpRequest(
 const { taskUid } = initiationData;
 
 const getTask = async (taskUid, count = 0) => {
-  if (count > 5) throw Error('getTask function call limit exceeded');
+  if (count > 5) throw Error("getTask function call limit exceeded");
 
   const getData = await httpRequest(
     "get",
@@ -38,22 +41,23 @@ const getTask = async (taskUid, count = 0) => {
 
   const { status, error } = getData;
 
-  if (status === 'failed') throw error;
-  if (status === 'succeeded') return true;
+  if (status === "failed") throw error;
+  if (status === "succeeded") return true;
 
-  if (error) throw {
-    message: 'getTask function call failed',
-    error,
-  };
+  if (error)
+    throw {
+      message: "getTask function call failed",
+      error,
+    };
 
   setTimeout(() => {
     getTask(taskUid, count + 1);
   }, 1000);
-}
+};
 
 await getTask(taskUid);
 
-console.log('Index initiation completed');
+console.log("Index initiation completed");
 
 await httpRequest(
   "patch",
@@ -61,26 +65,23 @@ await httpRequest(
   {
     displayedAttributes: [
       "id",
-    ],
-    searchableAttributes: [
-      "abbreviation",
       "name",
-      "keywords",
-    ],
-    filterableAttributes: [
+      "abbreviation",
+      "address",
+      "bannerImage",
       "tags",
-      "type",
     ],
+    searchableAttributes: ["abbreviation", "name", "keywords"],
+    filterableAttributes: ["tags", "type"],
     sortableAttributes: [],
-    rankingRules:
-      [
-        "words",
-        "typo",
-        "attribute",
-        "exactness",
-        "sort",
-        "proximity",
-      ],
+    rankingRules: [
+      "words",
+      "typo",
+      "attribute",
+      "exactness",
+      "sort",
+      "proximity",
+    ],
     stopWords: [],
     synonyms: {},
     distinctAttribute: null,
@@ -88,20 +89,20 @@ await httpRequest(
       enabled: true,
       minWordSizeForTypos: {
         oneTypo: 4,
-        twoTypos: 7
+        twoTypos: 7,
       },
       disableOnWords: [],
-      disableOnAttributes: []
+      disableOnAttributes: [],
     },
     faceting: {
-      maxValuesPerFacet: 100
+      maxValuesPerFacet: 100,
     },
     pagination: {
-      maxTotalHits: 1000
+      maxTotalHits: 1000,
     },
     proximityPrecision: "byAttribute",
   },
   axiosConfig
-)
+);
 
-console.log('Index updation completed');
+console.log("Index updation completed");

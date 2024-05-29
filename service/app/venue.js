@@ -19,8 +19,6 @@ const POST = async ({ body, locals }) => {
     logo,
   } = body;
   const { userId: editor } = locals.userData;
-  const imageArray = [logo, ...gallery, bannerImage];
-  await saveFilesBulk(imageArray);
   return createVenue({
     bannerImage,
     name,
@@ -51,37 +49,12 @@ const PATCH = async ({ body, locals }) => {
   } = body;
   const { userId: editor } = locals.userData;
   const venue = await getVenue(venueId);
-  if (!venue) throw Error('Invalid Venue');
-  const deleteImages = [], createImages = [];
-  if (bannerImage && bannerImage !== venue.bannerImage) {
-    deleteImages.push(venue.bannerImage);
-    createImages.push(bannerImage);
-  }
-  if (logo && logo !== venue.logo) {
-    deleteImages.push(venue.logo);
-    createImages.push(logo);
-  }
-  if (gallery) {
-    const oldGallerySet = new Set(venue.gallery);
-    const newGallerySet = new Set(gallery);
-    for (const img of oldGallerySet) {
-      if (!newGallerySet.has(img)) {
-        deleteImages.push(img);
-      }
-    }
-    for (const img of newGallerySet) {
-      if (!oldGallerySet.has(img)) {
-        createImages.push(img);
-      }
-    }
-  }
-  await saveFilesBulk(createImages);
-  await deleteFilesBulk(deleteImages);
+  if (!venue) throw Error("Invalid Venue");
   console.log({
     tags,
     keywords,
     gallery,
-  })
+  });
   return createVenue({
     parent: venueId,
     bannerImage,
@@ -111,11 +84,11 @@ const createVenue = async ({
   tags,
   editor,
 }) => {
-  if (cities[city] && !cities[city]) throw Error("Invalid city");
-  if (types[type] && !types[type]) throw Error("Invalid type");
+  if (!cities[city]) throw Error("Invalid city");
+  if (!types[type]) throw Error("Invalid type");
   if (tags) {
     for (const tag of tags) {
-      if (!venueTags[tag]) throw Error('Invalid tag');
+      if (!venueTags[tag]) throw Error("Invalid tag");
     }
   }
   return VenueUpdate.create({
@@ -131,13 +104,16 @@ const createVenue = async ({
     ...(logo && { logo }),
     ...(keywords && { keywords }),
     ...(tags && { tags }),
-    ...(editor && { editor })
+    ...(editor && { editor }),
   });
 };
 
 const approveVenue = async (venueId, approver) => {
-  const updateList = await VenueUpdate.findAndPopulate({ _id: venueId }, 'parent');
-  if (!updateList || updateList.length === 0) throw Error('Invalid Venue');
+  const updateList = await VenueUpdate.findAndPopulate(
+    { _id: venueId },
+    "parent"
+  );
+  if (!updateList || updateList.length === 0) throw Error("Invalid Venue");
   const updateVenue = updateList[0];
   if (!updateVenue.parent) {
     const venue = await Venue.create({
@@ -163,6 +139,8 @@ const approveVenue = async (venueId, approver) => {
         type: venue.type,
         keywords: venue.keywords,
         tags: venue.tags,
+        address: updateVenue.address,
+        bannerImage: updateVenue.bannerImage,
       },
       venue.city
     );
@@ -179,22 +157,20 @@ const approveVenue = async (venueId, approver) => {
     keywords,
     gallery,
     logo,
-    editor
+    editor,
   } = updateVenue;
-  await Venue.findByIdAndUpdate(
-    originalVenueId,
-    {
-      ...(bannerImage && { bannerImage }),
-      ...(name && { name }),
-      ...(abbreviation && { abbreviation }),
-      ...(type && { type }),
-      ...(gallery && { gallery }),
-      ...(logo && { logo }),
-      ...(keywords && { keywords }),
-      ...(tags && { tags }),
-      ...(editor && { editor }),
-      approver,
-    });
+  await Venue.findByIdAndUpdate(originalVenueId, {
+    ...(bannerImage && { bannerImage }),
+    ...(name && { name }),
+    ...(abbreviation && { abbreviation }),
+    ...(type && { type }),
+    ...(gallery && { gallery }),
+    ...(logo && { logo }),
+    ...(keywords && { keywords }),
+    ...(tags && { tags }),
+    ...(editor && { editor }),
+    approver,
+  });
   await VenueMS.updateOne(
     {
       id: originalVenueId,
@@ -203,6 +179,7 @@ const approveVenue = async (venueId, approver) => {
       ...(type && { type }),
       ...(keywords && { keywords }),
       ...(tags && { tags }),
+      ...(bannerImage && {bannerImage}),
     },
     cityKey
   );
@@ -210,12 +187,12 @@ const approveVenue = async (venueId, approver) => {
 };
 
 const getPendingVenues = async () => {
-  return VenueUpdate.findAndPopulate({}, 'parent');
+  return VenueUpdate.findAndPopulate({}, "parent");
 };
 
 const getVenue = async (venueId) => {
   return Venue.findById(venueId);
-}
+};
 
 const updateVenue = async (venueId, venueData) => {
   const {
@@ -232,7 +209,8 @@ const updateVenue = async (venueId, venueData) => {
   } = venueData;
   const venue = await getVenue(venueId);
   const city = venue.city;
-  const deleteImages = [], createImages = [];
+  const deleteImages = [],
+    createImages = [];
   if (bannerImage && bannerImage !== venue.bannerImage) {
     deleteImages.push(venue.bannerImage);
     createImages.push(bannerImage);
@@ -278,16 +256,16 @@ const updateVenue = async (venueId, venueData) => {
     ...(keywords && { keywords }),
     ...(logo && { logo }),
   });
-}
+};
 
 const deleteVenue = async (venueId) => {
   const venue = await getVenue(venueId);
-  if (!venue || venue.events?.length > 0) throw Error('Invalid Delete');
+  if (!venue || venue.events?.length > 0) throw Error("Invalid Delete");
   await Promise.all([
     VenueMS.deleteById(venueId, venue.city),
-    Venue.deleteOne({ _id: venueId })
-  ])
-}
+    Venue.deleteOne({ _id: venueId }),
+  ]);
+};
 
 export default {
   service: {

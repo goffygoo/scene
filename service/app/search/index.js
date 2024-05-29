@@ -71,33 +71,16 @@ const getFilters = labels => {
 }
 
 const POST = async ({ body, locals }) => {
-    const cityKey = locals.cityKey;
-    const { query = "", labels } = body;
+    // const cityKey = locals.cityKey;
+    const { query = "", labels, cityKey } = body;
     const index = labels?.index;
     if (index === 'venue') {
         const filter = getFilters(labels);
-        const msVenues = await VenueMS.searchQuery({ filter, query }, cityKey);
-        const venueIds = msVenues.map(v => v.id);
-        const venues = await Venue.findAndSelect({
-            _id: { $in: venueIds }
-        }, {
-            name: 1,
-            abbreviation: 1,
-            tags: 1,
-            address: 1,
-            bannerImage: 1,
-        });
+        const venues = await VenueMS.searchQuery({ filter, query }, cityKey);
         return venues;
     } else if (index === 'event') {
         const filter = getFilters(labels);
-        const msEvents = await EventMS.searchQuery({ filter, query, sort: ["boost:desc"] }, cityKey);
-        const eventIds = msEvents.map(e => e.id);
-        const events = await Event.findAndSelect({
-            _id: { $in: eventIds }
-        }, {
-            name: 1,
-            time: 1,
-        });
+        const events = await EventMS.searchQuery({ filter, query, sort: ["boost:desc"] }, cityKey);
         return events;
     } else {
         const { venues, events } = await getVenueAndEvents(
@@ -111,31 +94,28 @@ const POST = async ({ body, locals }) => {
             cityKey
         );
         const venueIds = venues.map(v => v.id);
-        const eventIds = events.map(e => e.id);
         const mappedEvents = await EventMS.searchQuery({
             filter: hydrateTags(venueIds, 'venueId'),
             sort: ["boost:desc"],
         }, cityKey);
-        const mappedEventIds = mappedEvents.map(e => e.id);
-        const allEventIds = [...(new Set([...eventIds, ...mappedEventIds]))];
-        const [allVenues, allEvents] = await Promise.all([
-            Venue.findAndSelect({
-                _id: { $in: venueIds }
-            }, {
-                name: 1,
-                abbreviation: 1,
-                address: 1,
-                bannerImage: 1,
-            }),
-            Event.findAndPopulate({
-                _id: { $in: allEventIds }
-            },
-                "venue",
-            )
-        ]);
 
-        let venueLength = allVenues.length, venueIdx = 0;
-        let eventLength = eventIds.length, eventIdx = 0;
+        const allEvents = []
+        const uniqueEventIds = new Set()
+        const eventIds = []
+        const mappedEventIds = []
+        for(let event of events) {
+            allEvents.push(event);
+            uniqueEventIds.add(event.id);
+        }
+        for(let event of mappedEvents) {
+            if (!uniqueEventIds.has(event.id)){
+                allEvents.push(event);
+                mappedEventIds.push(event.id)
+            }
+            uniqueEventIds.add(event.id);
+        }
+        let venueLength = venues.length, venueIdx = 0;
+        let eventLength = events.length, eventIdx = 0;
         let mappedEventLength = mappedEventIds.length, mappedEventIdx = 0;
         let totalResults = venueLength + allEvents.length;
 
@@ -143,8 +123,6 @@ const POST = async ({ body, locals }) => {
         for (let i = 0; i < allEvents.length; i++) {
             eventsMap[allEvents[i]._id] = i;
         }
-
-        console.log(allEvents)
         const searchResults = [];
         while (searchResults.length < totalResults) {
             let eventItr = 0
@@ -157,7 +135,7 @@ const POST = async ({ body, locals }) => {
             }
 
             if (venueIdx < venueLength) {
-                searchResults.push(allVenues[venueIdx++]);
+                searchResults.push(venues[venueIdx++]);
             }
         }
         return searchResults;

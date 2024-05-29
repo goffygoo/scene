@@ -19,7 +19,9 @@ const schema = {
             items: {
                 type: "string",
             },
-        }
+        },
+        bannerImage: { type: "string" },
+        address: { type: "string" },
     },
     required: [
         "id",

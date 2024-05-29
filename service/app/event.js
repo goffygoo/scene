@@ -27,8 +27,6 @@ const POST = async ({ body, locals }) => {
     const venue = await Venue.findById(venueId);
     if (!venue) throw Error('Invalid Venue Id');
     const cityKey = venue.city;
-    const imageArray = [logo, ...gallery, bannerImage];
-    await saveFilesBulk(imageArray);
     const event = await Event.create({
         bannerImage,
         venueId,
@@ -51,6 +49,8 @@ const POST = async ({ body, locals }) => {
             name,
             time: startTime,
             boost: event.boost,
+            bannerImage,
+            address: venue.address,
             tags,
             keywords,
         },

@@ -61,6 +61,11 @@ await httpRequest(
   {
     displayedAttributes: [
       "id",
+      "name",
+      "time",
+      "tags",
+      "bannerImage",
+      "address",
     ],
     searchableAttributes: [
       "name",
