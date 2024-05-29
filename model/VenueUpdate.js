@@ -26,7 +26,7 @@ const Schema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: [types.college.title],
+        enum: [types.college.code],
     },
     logo: {
         type: String,

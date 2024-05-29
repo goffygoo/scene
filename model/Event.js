@@ -8,7 +8,7 @@ const Schema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  venue: {
+  venueId: {
     type: ObjectId,
     required: true,
   },
