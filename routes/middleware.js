@@ -1,19 +1,23 @@
 import Ajv from "ajv";
 import { HEADERS } from "../constants/index.js";
 import AuthModule from "../service/auth/index.js";
+import asyncLocalStorage from "../util/asyncStorage.js";
+import { randomId } from "../util/index.js";
 
 const ajv = new Ajv();
 
 export const wrapper = (fn) => async (req, res) => {
-  try {
+  const txnId = randomId();
+  asyncLocalStorage.run(txnId, async () => {
     const body = { ...req.body, ...req.query };
     const locals = res.locals;
-    const response = await fn({ body, locals });
+    return fn({ body, locals });
+  }).then(response => {
     return res.send(response);
-  } catch (err) {
+  }).catch(err => {
     console.log(err);
     return res.sendStatus(400);
-  }
+  })
 };
 
 export const parseAppConfig = (req, res, next) => {

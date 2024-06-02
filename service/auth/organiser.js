@@ -9,7 +9,6 @@ import {
   generateOtp,
   generateRefreshToken,
 } from "./utils.js";
-
 import db from "../../util/db.js";
 
 const forgotPassword = async ({ body }) => {
