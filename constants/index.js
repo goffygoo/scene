@@ -11,6 +11,7 @@ export const GENDER = {
 
 export const REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 180;
 
+// TODO: change to 60 * 15
 export const ACCESS_TOKEN_EXPIRE_TIME_IN_SECS = 60 * 60 * 24;
 
 export const HEADERS = {

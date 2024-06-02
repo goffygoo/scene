@@ -109,9 +109,9 @@ const updateEvent = async (event, eventData) => {
     about,
     note,
     gallery,
-    boost, // admin
+    boost,
     tags,
-    specialTags, // admin
+    specialTags,
     keywords,
     logo,
   } = eventData;
