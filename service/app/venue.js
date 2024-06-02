@@ -84,7 +84,7 @@ const createVenue = async ({
   tags,
   editor,
 }) => {
-  if (!cities[city]) throw Error("Invalid city");
+  if (!parent && !cities[city]) throw Error("Invalid city");
   if (!types[type]) throw Error("Invalid type");
   if (tags) {
     for (const tag of tags) {
@@ -179,7 +179,7 @@ const approveVenue = async (venueId, approver) => {
       ...(type && { type }),
       ...(keywords && { keywords }),
       ...(tags && { tags }),
-      ...(bannerImage && {bannerImage}),
+      ...(bannerImage && { bannerImage }),
     },
     cityKey
   );
@@ -192,6 +192,11 @@ const getPendingVenues = async () => {
 
 const getVenue = async (venueId) => {
   return Venue.findById(venueId);
+};
+
+const GET = async ({ body }) => {
+  const { venueId } = body;
+  return getVenue(venueId);
 };
 
 const updateVenue = async (venueId, venueData) => {
@@ -271,6 +276,7 @@ export default {
   service: {
     POST,
     PATCH,
+    GET,
   },
   createVenue,
   getVenue,

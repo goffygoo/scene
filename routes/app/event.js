@@ -11,4 +11,20 @@ router.post(
   wrapper(Module.service.POST)
 );
 
+router.patch(
+  "/",
+  verifyAccessToken,
+  verifyOrganiser,
+  wrapper(Module.service.PATCH)
+);
+
+router.get("/", wrapper(Module.service.GET));
+
+router.get(
+  "/events",
+  verifyAccessToken,
+  verifyOrganiser,
+  wrapper(Module.service.getEvents)
+);
+
 export default router;
