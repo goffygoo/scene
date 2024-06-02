@@ -16,6 +16,8 @@ router.patch(
   verifyAccessToken,
   verifyOrganiser,
   wrapper(Module.service.PATCH)
-);
+); 
+
+router.get("/", wrapper(Module.service.GET));
 
 export default router;

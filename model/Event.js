@@ -11,6 +11,7 @@ const Schema = new mongoose.Schema({
   venueId: {
     type: ObjectId,
     required: true,
+    ref: "Venue"
   },
   startTime: {
     type: Date,
