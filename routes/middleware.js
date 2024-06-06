@@ -1,18 +1,46 @@
 import Ajv from "ajv";
-import { HEADERS } from "../constants/index.js";
+import { HEADERS, enableESLogging } from "../constants/index.js";
 import AuthModule from "../service/auth/index.js";
+import asyncLocalStorage from "../util/asyncStorage.js";
+import { randomId } from "../util/index.js";
+import LogModule from "../service/log/index.js";
 
 const ajv = new Ajv();
 
 export const wrapper = (fn) => async (req, res) => {
-  try {
-    const body = { ...req.body, ...req.query };
-    const locals = res.locals;
-    const response = await fn({ body, locals });
-    return res.send(response);
-  } catch (err) {
-    console.log(err);
-    return res.sendStatus(400);
+  const txnId = randomId();
+  const body = { ...req.body, ...req.query };
+  const locals = res.locals;
+  const api = req.originalUrl;
+  const startTime = Date.now();
+  if (enableESLogging) {
+    asyncLocalStorage.run(txnId, async () => {
+      return fn({ body, locals });
+    }).then(response => {
+      LogModule.log({
+        data: JSON.stringify(response),
+        key1: api,
+        metric: Date.now() - startTime,
+        txnId,
+      });
+      return res.send(response);
+    }).catch(err => {
+      LogModule.error({
+        data: err.toString(),
+        key1: api,
+        metric: Date.now() - startTime,
+        txnId,
+      });
+      console.log(err);
+      return res.sendStatus(400);
+    });
+  } else {
+    fn({ body, locals }).then(response => {
+      return res.send(response);
+    }).catch(err => {
+      console.log(err);
+      return res.sendStatus(400);
+    });
   }
 };
 

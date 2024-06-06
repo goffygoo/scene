@@ -41,6 +41,15 @@ const getFeatureValue = (key, userId) => {
     return false;
 };
 
+const pollFeatureConfig = async () => {
+    const features = await getAll();
+    const map = new Map();
+    features.forEach((feature) => {
+        map.set(feature.key, feature);
+    });
+    Cache.feature.replaceHashMap(map);
+};
+
 export default {
     service: {
         GET,
@@ -48,6 +57,6 @@ export default {
         PATCH,
         DELETE
     },
-    getAll,
     getFeatureValue,
+    pollFeatureConfig
 };

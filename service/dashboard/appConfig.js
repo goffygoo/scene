@@ -1,6 +1,7 @@
 import AppConfig from "../../model/AppConfig.js";
 import CacheModule from "../cache/index.js";
 import Event from "../../model/Event.js";
+import AppModule from "../app/index.js";
 
 const GET = async ({ body }) => {
   const { city } = body;
@@ -16,10 +17,19 @@ const PATCH = async ({ body }) => {
 
 const getForCity = async (city) => {
   const eventConfig = await AppConfig.findOne({ city, key: "topEvents" });
-  const venueConfig = await AppConfig.findOne({ city, key: "topEvents" });
+  const venueConfig = await AppConfig.findOne({ city, key: "topVenues" });
   const events = await Event.find({ _id: { $in: eventConfig.data } });
   const venues = await Event.find({ _id: { $in: venueConfig.data } });
   return { events, venues };
+};
+
+const pollAppConfig = async () => {
+  const cities = await AppModule.getCities();
+  for (const city of cities) {
+    const data = await getForCity(city.code);
+    CacheModule.appConfig.setEventMap(city.code, data.events);
+    CacheModule.appConfig.setVenueMap(city.code, data.venues);
+  }
 };
 
 export default {
@@ -27,5 +37,5 @@ export default {
     GET,
     PATCH,
   },
-  getForCity,
+  pollAppConfig,
 };
