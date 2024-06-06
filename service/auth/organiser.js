@@ -1,6 +1,7 @@
 import { REFRESH_TOKEN_EXPIRE_TIME } from "../../constants/index.js";
 import OrganiserOtp from "../../model/OrganiserOtp.js";
 import { sendOtpResetPassword } from "../../util/mail/index.js";
+import Module from "../../service/app/event.js";
 import Organiser from "../../model/Organiser.js";
 import {
   decodeAccessToken,
@@ -102,7 +103,11 @@ const newAccessToken = async ({ body }) => {
     tokenEAT: 1,
   });
   if (
-    !(organiser && organiser.refreshToken === refreshToken && Date.now() < organiser.tokenEAT)
+    !(
+      organiser &&
+      organiser.refreshToken === refreshToken &&
+      Date.now() < organiser.tokenEAT
+    )
   ) {
     throw Error("Invalid data");
   }
@@ -116,6 +121,13 @@ const newAccessToken = async ({ body }) => {
   };
 };
 
+const staffLogin = async ({ body }) => {
+  const eventId = body.eventId;
+  const event = Module.getEvent(eventId);
+  if (!event) throw Error("Invalid data");
+  return {};
+};
+
 export default {
   service: {
     login,
@@ -123,5 +135,6 @@ export default {
     verifyOtp,
     resetPassword,
     newAccessToken,
+    staffLogin,
   },
 };
