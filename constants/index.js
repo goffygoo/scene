@@ -27,3 +27,10 @@ export const MODEL_INDEX = {
 };
 
 export const S3_BUCKET_ID = "goffygoo-static-images";
+
+export const LOG_TYPES = {
+    LOG: "log",
+    ERROR: "error"
+}
+
+export const enableESLogging = false;
