@@ -14,33 +14,38 @@ export const wrapper = (fn) => async (req, res) => {
   const api = req.originalUrl;
   const startTime = Date.now();
   if (enableESLogging) {
-    asyncLocalStorage.run(txnId, async () => {
-      return fn({ body, locals });
-    }).then(response => {
-      LogModule.log({
-        data: JSON.stringify(response),
-        key1: api,
-        metric: Date.now() - startTime,
-        txnId,
+    asyncLocalStorage
+      .run(txnId, async () => {
+        return fn({ body, locals });
+      })
+      .then((response) => {
+        LogModule.log({
+          data: JSON.stringify(response),
+          key1: api,
+          metric: Date.now() - startTime,
+          txnId,
+        });
+        return res.send(response);
+      })
+      .catch((err) => {
+        LogModule.error({
+          data: err.toString(),
+          key1: api,
+          metric: Date.now() - startTime,
+          txnId,
+        });
+        console.log(err);
+        return res.sendStatus(400);
       });
-      return res.send(response);
-    }).catch(err => {
-      LogModule.error({
-        data: err.toString(),
-        key1: api,
-        metric: Date.now() - startTime,
-        txnId,
-      });
-      console.log(err);
-      return res.sendStatus(400);
-    });
   } else {
-    fn({ body, locals }).then(response => {
-      return res.send(response);
-    }).catch(err => {
-      console.log(err);
-      return res.sendStatus(400);
-    });
+    fn({ body, locals })
+      .then((response) => {
+        return res.send(response);
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.sendStatus(400);
+      });
   }
 };
 
@@ -85,6 +90,16 @@ export const verifyOrganiser = (_req, res, next) => {
   }
 };
 
+export const verifyOrganiserOrAdmin = (_req, res, next) => {
+  const { userData } = res.locals;
+  const { organiser, admin } = userData;
+  if (!organiser && !admin) {
+    return res.sendStatus(401);
+  } else {
+    return next();
+  }
+};
+
 export const validateSchema = (schema) => (req, res, next) => {
   const validate = ajv.compile(schema);
   const valid = validate(req.body);
@@ -94,4 +109,3 @@ export const validateSchema = (schema) => (req, res, next) => {
     return next();
   }
 };
-

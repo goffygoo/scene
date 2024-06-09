@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
-import DateSchema from './schema/Date.js'
+import DateSchema from "./schema/Date.js";
 import { GENDER } from "../constants/index.js";
 import modelWrapper from "./modelWrapper.js";
+const { ObjectId } = mongoose.Schema.Types;
 
 const Schema = new mongoose.Schema({
   email: {
@@ -21,16 +22,20 @@ const Schema = new mongoose.Schema({
   },
   profile: {
     name: {
-        type: String
+      type: String,
     },
     dob: {
-        type: DateSchema
+      type: DateSchema,
     },
     gender: {
-        type: String,
-        enum: [GENDER.MALE, GENDER.FEMALE, GENDER.OTHER],
-    }
-  }
+      type: String,
+      enum: [GENDER.MALE, GENDER.FEMALE, GENDER.OTHER],
+    },
+  },
+  tickets: {
+    type: [{ type: ObjectId, ref: "Ticket" }],
+    default: [],
+  },
 });
 
 export default modelWrapper(mongoose.model("User", Schema));

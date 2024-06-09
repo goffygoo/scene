@@ -2,7 +2,11 @@ import jwt from "jsonwebtoken";
 import User from "../../model/User.js";
 import Otp from "../../model/UserOtp.js";
 import db from "../../util/db.js";
-import { generateAccessToken, generateOtp, generateRefreshToken } from "./utils.js";
+import {
+  generateAccessToken,
+  generateOtp,
+  generateRefreshToken,
+} from "./utils.js";
 import { httpRequest } from "../../util/index.js";
 import { REFRESH_TOKEN_EXPIRE_TIME } from "../../constants/index.js";
 import { sendOtpMail } from "../../util/mail/index.js";
@@ -111,7 +115,7 @@ const googleLogin = async ({ body }) => {
   const userData = jwt.decode(id_token);
   const { email } = userData;
   const user = await User.findOne({ email });
-  let userId = user._id;
+  let userId;
   let refreshToken = generateRefreshToken();
   let tokenEAT = Date.now() + REFRESH_TOKEN_EXPIRE_TIME;
   if (!user) {
@@ -122,11 +126,13 @@ const googleLogin = async ({ body }) => {
     });
     userId = newUser._id;
   } else if (!user.refreshToken || user.tokenEAT <= Date.now()) {
+    userId = user._id;
     await User.findByIdAndUpdate(userId, {
       refreshToken,
       tokenEAT,
     });
   } else {
+    userId = user._id;
     refreshToken = user.refreshToken;
   }
   const accessToken = generateAccessToken({
