@@ -27,4 +27,17 @@ router.get(
   wrapper(Module.service.getEvents)
 );
 
+router.post("/register", verifyAccessToken, wrapper(Module.service.register));
+
+router.post("/register", verifyAccessToken, wrapper(Module.service.register));
+
+router.get("/tickets", verifyAccessToken, wrapper(Module.service.getTickets));
+
+router.post(
+  "/scanTicket",
+  verifyAccessToken,
+  verifyOrganiser,
+  wrapper(Module.service.scanTicket)
+);
+
 export default router;

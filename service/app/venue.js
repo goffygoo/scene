@@ -191,7 +191,7 @@ const getPendingVenues = async () => {
 };
 
 const getVenue = async (venueId) => {
-  return Venue.findById(venueId);
+  return Venue.findOneAndPopulate({ _id: venueId }, "events");
 };
 
 const GET = async ({ body }) => {

@@ -1,5 +1,7 @@
 import { eventTags } from "../../constants/liveConfig.js";
 import Event from "../../model/Event.js";
+import Ticket from "../../model/Ticket.js";
+import User from "../../model/User.js";
 import Venue from "../../model/Venue.js";
 import EventMS from "./search/model/Event.js";
 
@@ -114,6 +116,8 @@ const updateEvent = async (event, eventData) => {
     specialTags,
     keywords,
     logo,
+    installApps,
+    showAds,
   } = eventData;
 
   const eventId = event._id.toString();
@@ -150,7 +154,7 @@ const updateEvent = async (event, eventData) => {
     ...(name && { name }),
     ...(startTime && { startTime }),
     ...(endTime && { endTime }),
-    ...(price && { price }),
+    ...((price === 0 || price) && { price }),
     ...(about && { about }),
     ...(note && { note }),
     ...(gallery && { gallery }),
@@ -159,6 +163,8 @@ const updateEvent = async (event, eventData) => {
     ...(specialTags && { specialTags }),
     ...(keywords && { keywords }),
     ...(logo && { logo }),
+    ...(installApps && { installApps }),
+    ...(showAds && { showAds }),
   });
 };
 
@@ -174,12 +180,58 @@ const deleteEvent = async (eventId) => {
   await Event.deleteOne({ _id: eventId });
 };
 
+const register = async ({ body, locals }) => {
+  const { eventId } = body;
+  const { userId } = locals.userData;
+  const existingTicket = await Ticket.findOne({ event: eventId, user: userId });
+  if (existingTicket) throw "Already Registered";
+  const ticket = await Ticket.create({
+    event: eventId,
+    user: userId,
+  });
+  await User.findByIdAndUpdate(userId, {
+    $push: { tickets: ticket._id },
+  });
+};
+
+const getTickets = async ({ locals }) => {
+  const { userId } = locals.userData;
+  const { tickets } = await User.findById(userId);
+  const allTickets = await Ticket.findAndPopulate(
+    { _id: { $in: tickets } },
+    "event"
+  );
+  return allTickets;
+};
+
+const scanTicket = async ({ body }) => {
+  const { eventId, ticketId, userId } = body;
+
+  const ticket = await Ticket.findById(ticketId);
+
+  console.log(ticket);
+  console.log(eventId, userId);
+
+  if (ticket.event.toString() !== eventId || userId !== ticket.user.toString())
+    throw "Invalid Ticket";
+
+  if (ticket.scanned) throw "Ticket Already Scanned";
+
+  await Ticket.findByIdAndUpdate(ticketId, { scanned: true });
+
+  const { name, gender, age } = await User.findById(userId);
+  return { name, gender, age };
+};
+
 export default {
   service: {
     POST,
     GET,
     PATCH,
     getEvents,
+    register,
+    getTickets,
+    scanTicket,
   },
   getEvent,
   deleteEvent,
