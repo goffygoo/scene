@@ -212,46 +212,7 @@ const updateVenue = async (venueId, venueData) => {
     keywords,
     tags,
   } = venueData;
-  const venue = await getVenue(venueId);
-  const city = venue.city;
-  const deleteImages = [],
-    createImages = [];
-  if (bannerImage && bannerImage !== venue.bannerImage) {
-    deleteImages.push(venue.bannerImage);
-    createImages.push(bannerImage);
-  }
-  if (logo && logo !== venue.logo) {
-    deleteImages.push(venue.logo);
-    createImages.push(logo);
-  }
-  const oldGallerySet = new Set(venue.gallery);
-  const newGallerySet = new Set(gallery);
-  for (const img of oldGallerySet) {
-    if (!newGallerySet.has(img)) {
-      deleteImages.push(img);
-    }
-  }
-  for (const img of newGallerySet) {
-    if (!oldGallerySet.has(img)) {
-      createImages.push(img);
-    }
-  }
-  await saveFilesBulk(createImages);
-  await deleteFilesBulk(deleteImages);
-
-  await VenueMS.createOrReplaceOne(
-    {
-      id: venueId,
-      abbreviation: abbreviation || venue.abbreviation,
-      name: name || venue.name,
-      type: type || venue.type,
-      keywords: keywords || venue.keywords,
-      tags: tags || venue.tags,
-    },
-    city
-  );
-
-  return Venue.findByIdAndUpdate(venueId, {
+  const venue = await Venue.findByIdAndUpdate(venueId, {
     ...(bannerImage && { bannerImage }),
     ...(name && { name }),
     ...(address && { address }),
@@ -261,6 +222,19 @@ const updateVenue = async (venueId, venueData) => {
     ...(keywords && { keywords }),
     ...(logo && { logo }),
   });
+  const city = venue.city;
+  await VenueMS.updateOne(
+    {
+      id: venueId,
+      ...(abbreviation && { abbreviation }),
+      ...(name && { name }),
+      ...(type && { type }),
+      ...(keywords && { keywords }),
+      ...(tags && { tags }),
+    },
+    city
+  );
+  return venue;
 };
 
 const deleteVenue = async (venueId) => {
