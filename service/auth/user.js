@@ -9,7 +9,7 @@ import {
 } from "./utils.js";
 import { httpRequest } from "../../util/index.js";
 import { REFRESH_TOKEN_EXPIRE_TIME } from "../../constants/index.js";
-import { sendOtpMail } from "../../util/mail/index.js";
+import CommsModule from "../../service/comms/index.js";
 import config from "../../constants/config.js";
 
 const {
@@ -35,7 +35,7 @@ const login = async ({ body }) => {
       ],
       session
     );
-    await sendOtpMail(email, OTP);
+    await CommsModule.mail.sendOtpMail(email, OTP);
     await session.commitTransaction();
   } catch (err) {
     await session.abortTransaction();

@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import { otpResetPasswordTemplate, otpTemplate } from "./template.js";
-import config from "../../constants/config.js";
+import config from "../../../constants/config.js";
 
 const { MAILER_ID, MAILER_PASSWORD } = config;
 
@@ -24,7 +24,7 @@ const sendMailToUser = async (email, subject, html) => {
     } catch (_e) {}
 };
 
-export const sendOtpMail = async (email, otp) => {
+const sendOtpMail = async (email, otp) => {
     const template = otpTemplate(otp);
     sendMailToUser(
         email,
@@ -33,11 +33,16 @@ export const sendOtpMail = async (email, otp) => {
     );
 }
 
-export const sendOtpResetPassword = async (email, otp) => {
+const sendOtpResetPassword = async (email, otp) => {
     const template = otpResetPasswordTemplate(otp);
     sendMailToUser(
         email,
         'OTP for BaljeetKode Password Reset',
         template
     );
+}
+
+export default {
+    sendOtpMail,
+    sendOtpResetPassword,
 }

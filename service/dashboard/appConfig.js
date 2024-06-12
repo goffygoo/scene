@@ -1,13 +1,15 @@
 import AppConfig from "../../model/AppConfig.js";
 import CacheModule from "../cache/index.js";
+import CommsModule from "../comms/index.js";
 import Event from "../../model/Event.js";
 import AppModule from "../app/index.js";
 import Venue from "../../model/Venue.js";
 
 const GET = async ({ body }) => {
-  const { city } = body;
+  const { city, fcmToken, userId } = body;
   const events = CacheModule.appConfig.getTopEvents(city);
   const venues = CacheModule.appConfig.getTopVenues(city);
+  if (fcmToken && userId) await CommsModule.notification.addFCMToken(userId, fcmToken);
   return { events, venues };
 };
 
