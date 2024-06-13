@@ -10,7 +10,7 @@ const indexUid = SearchModule.getIndexKey(
 
 const { SEARCH_ENGINE, MEILISEARCH_SECRET_KEY } = config;
 
-const axiosConfig = {
+const msConfig = {
   headers: {
     Authorization: `Bearer ${MEILISEARCH_SECRET_KEY}`,
   },
@@ -24,7 +24,7 @@ const initiationData = await httpRequest(
     uid: indexUid,
     primaryKey: "id",
   },
-  axiosConfig
+  msConfig
 );
 
 const { taskUid } = initiationData;
@@ -36,7 +36,7 @@ const getTask = async (taskUid, count = 0) => {
     "get",
     `${SEARCH_ENGINE}/tasks/${taskUid}`,
     {},
-    axiosConfig
+    msConfig
   );
 
   const { status, error } = getData;
@@ -102,7 +102,7 @@ await httpRequest(
     },
     proximityPrecision: "byAttribute",
   },
-  axiosConfig
+  msConfig
 );
 
 console.log("Index updation completed");
