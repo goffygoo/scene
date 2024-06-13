@@ -1,4 +1,4 @@
-import db from "../util/db.js";
+import _db from "../util/db.js";
 import Admin from "../model/Admin.js";
 const adminEmails = ["kulbois007@gmail.com", "chilly@lemon.com"];
 const createArray = adminEmails.map((email) => ({ email, password: " " }));
