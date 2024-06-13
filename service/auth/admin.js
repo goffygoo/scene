@@ -83,6 +83,7 @@ const login = async ({ body }) => {
     userId,
     email,
     admin: true,
+    ...(admin.superAdmin && { superAdmin: true }),
   });
   return {
     refreshToken,
@@ -106,6 +107,7 @@ const newAccessToken = async ({ body }) => {
     userId,
     email: admin.email,
     admin: true,
+    ...(admin.superAdmin && { superAdmin: true }),
   });
   return {
     accessToken,

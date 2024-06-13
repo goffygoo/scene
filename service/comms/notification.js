@@ -13,7 +13,7 @@ const pushToUser = async (userId) => {
     });
     const cleanTokens = [];
     for (let i = 0; i < batchResponse.responses.length; i++) {
-        if (!response.responses[i].error) {
+        if (!batchResponse.responses[i].error) {
             cleanTokens.push(tokens[i]);
         }
     }

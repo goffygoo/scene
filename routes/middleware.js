@@ -80,6 +80,16 @@ export const verifyAdmin = (_req, res, next) => {
   }
 };
 
+export const verifySuperAdmin = (_req, res, next) => {
+  const { userData } = res.locals;
+  const { superAdmin } = userData;
+  if (!superAdmin) {
+    return res.sendStatus(401);
+  } else {
+    return next();
+  }
+};
+
 export const verifyOrganiser = (_req, res, next) => {
   const { userData } = res.locals;
   const { organiser } = userData;
