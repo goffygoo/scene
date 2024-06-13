@@ -12,14 +12,16 @@ const orchestratorConfig = {
 const run = async () => {
     const argv = process.argv;
     const workflowKey = argv[2];
-    let success = false;
+    let success = true;
     try {
         const workflowName = argv[3];
         const params = JSON.parse(argv[4]);
         const workflow = await import(`./${workflowName}.js`);
         const fn = workflow.default;
         await fn(params);
-    } catch (_e) { }
+    } catch (_e) {
+        success = false;
+    }
     await httpRequest(
         "post",
         `${WORKFLOW_ORCHESTRATOR}/terminated`,
