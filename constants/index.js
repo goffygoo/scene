@@ -34,3 +34,9 @@ export const LOG_TYPES = {
 }
 
 export const enableESLogging = false;
+
+export const DataTypes = {
+    string: "string",
+    boolean: "boolean",
+    number: "number",
+}

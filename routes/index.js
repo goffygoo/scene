@@ -9,18 +9,11 @@ import {
   verifyAdmin,
   verifyOrganiserOrAdmin,
 } from "./middleware.js";
-import CommsModule from "../service/comms/index.js";
 
 const router = express.Router();
 
 router.get("/", (_req, res) => {
   res.send("Health OK");
-});
-
-// TODO: clean up test route
-router.get("/test", (_req, res) => {
-  CommsModule.notification.pushToUser();
-  res.send("OK");
 });
 
 router.use("/auth", auth);
