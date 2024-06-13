@@ -40,7 +40,6 @@ export default {
   service: {
     GET,
     PATCH,
-    POST,
   },
   pollAppConfig,
 };
