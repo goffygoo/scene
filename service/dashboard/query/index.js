@@ -1,6 +1,7 @@
-import queries from "./queries/index.js";
+import { getQueries, buildQueries } from "./queries/index.js";
 
 const list = async () => {
+    const queries = getQueries();
     const queryList = Object.keys(queries).map((key) => {
         const value = queries[key];
         return {
@@ -13,6 +14,7 @@ const list = async () => {
 }
 
 const execute = async ({ body }) => {
+    const queries = getQueries();
     const { key, params } = body;
     return queries[key].query(params);
 }
@@ -22,4 +24,5 @@ export default {
         list,
         execute
     },
+    buildQueries
 }

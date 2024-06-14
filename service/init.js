@@ -11,6 +11,7 @@ const initScheduler = () => {
 export default async function () {
     await DashboardModule.feature.pollFeatureConfig();
     await DashboardModule.appConfig.pollAppConfig();
+    await DashboardModule.query.buildQueries();
     if (enableESLogging) await LogModule.createIndexes();
     initScheduler();
 }

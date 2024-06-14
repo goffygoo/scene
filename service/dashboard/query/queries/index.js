@@ -1,9 +1,17 @@
-import createEvent from "./createEvent.js";
-import deleteEvent from "./deleteEvent.js";
-import listAllCollections from "./listAllCollections.js";
+import fs from 'fs';
 
-export default {
-    "createEvent": createEvent,
-    "deleteEvent": deleteEvent,
-    "listAllCollections": listAllCollections,
+const __dirname = import.meta.dirname;
+const Queries = {};
+
+export const buildQueries = async () => {
+    const ls = fs.readdirSync(__dirname);
+    const files = ls.filter(name => name !== 'index.js')
+    for (const file of files) {
+        const module = await import('./' + file);
+        Queries[file] = module.default;
+    }
+}
+
+export const getQueries = () => {
+    return Queries;
 }
