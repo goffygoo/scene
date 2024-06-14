@@ -9,7 +9,7 @@
     "dev": "nodemon index.js",
     "venue:index": "CITY_KEY='delhi' node scripts/createVenueIndex.js",
     "event:index": "CITY_KEY='delhi' node scripts/createEventIndex.js",
-    "create-admin": "node scripts/createAdmin.js"
+    "create-super-admin": "node scripts/createSuperAdmin.js"
   },
   "keywords": [],
   "author": "",
