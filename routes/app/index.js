@@ -18,5 +18,6 @@ router.get("/timetags", wrapper(Module.service.getTimeTags));
 router.get("/eventtags", wrapper(Module.service.getEventTags));
 router.get("/specialeventtags", wrapper(Module.service.getSpecialEventTags));
 router.get("/appConfig", wrapper(AppConfigModule.service.GET));
+router.get("/genders", wrapper(Module.service.getGenders));
 
 export default router;

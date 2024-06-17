@@ -94,6 +94,7 @@ const verifyOtp = async ({ body }) => {
       refreshToken,
       accessToken,
       userId,
+      ...(user && user.profileComplete && { profile: user.profile }),
     };
   } catch (err) {
     await session.abortTransaction();
@@ -150,10 +151,10 @@ const updateProfile = async ({ body, locals }) => {
   const { userData } = locals;
   const { userId } = userData;
   const { name, dob, gender } = body;
-  const dateObject = new Date(dob.year, dob.month, dob.day);
+  const dateObject = new Date(dob);
   const dobParsed = {
     day: dateObject.getDate(),
-    month: dateObject.getMonth(),
+    month: dateObject.getMonth() + 1,
     year: dateObject.getFullYear(),
   };
   await User.findByIdAndUpdate(userId, {

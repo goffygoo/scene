@@ -41,7 +41,7 @@ router.post('/verifyOtp', wrapper(Module.service.verifyOtp));
 router.post('/googleLogin', wrapper(Module.service.googleLogin));
 router.post(
     '/updateProfile',
-    validateSchema(updateProfileSchema),
+    // validateSchema(updateProfileSchema),
     verifyAccessToken,
     wrapper(Module.service.updateProfile)
 );

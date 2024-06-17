@@ -209,9 +209,6 @@ const scanTicket = async ({ body }) => {
 
   const ticket = await Ticket.findById(ticketId);
 
-  console.log(ticket);
-  console.log(eventId, userId);
-
   if (ticket.event.toString() !== eventId || userId !== ticket.user.toString())
     throw "Invalid Ticket";
 
@@ -219,7 +216,8 @@ const scanTicket = async ({ body }) => {
 
   await Ticket.findByIdAndUpdate(ticketId, { scanned: true });
 
-  const { name, gender, age } = await User.findById(userId);
+  const { profile } = await User.findById(userId);
+  const { name, gender, age } = profile;
   return { name, gender, age };
 };
 

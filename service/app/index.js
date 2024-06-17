@@ -7,6 +7,7 @@ import {
   types,
   venueTags,
 } from "../../constants/liveConfig.js";
+import { GENDER } from "../../constants/index.js";
 
 const getCities = async () => {
   return Object.values(cities);
@@ -32,6 +33,10 @@ const getSpecialEventTags = async () => {
   return Object.values(eventTagsSpecial);
 };
 
+const getGenders = async () => {
+  return Object.values(GENDER);
+};
+
 export default {
   service: {
     getCities,
@@ -40,6 +45,7 @@ export default {
     getVenueTags,
     getTimeTags,
     getSpecialEventTags,
+    getGenders,
   },
   venue,
   getCities,
