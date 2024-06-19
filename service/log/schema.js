@@ -24,3 +24,17 @@ export const ErrorSchema = {
         value: LOG_TYPES.ERROR,
     },
 }
+
+export const EventSchema = {
+    data: { type: 'text' },
+    date: { type: 'date' },
+    name: { type: 'keyword' },
+    city: { type: 'keyword' },
+    action: { type: 'keyword' },
+    device: { type: 'keyword' },
+    version: { type: 'keyword' },
+    type: {
+        type: 'constant_keyword',
+        value: LOG_TYPES.EVENT,
+    },
+}
