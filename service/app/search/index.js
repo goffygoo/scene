@@ -103,9 +103,11 @@ const POST = async ({ body, locals }) => {
         const uniqueEventIds = new Set()
         const eventIds = []
         const mappedEventIds = []
+
         for(let event of events) {
             allEvents.push(event);
             uniqueEventIds.add(event.id);
+            eventIds.push(event.id)
         }
         for(let event of mappedEvents) {
             if (!uniqueEventIds.has(event.id)){
@@ -118,10 +120,10 @@ const POST = async ({ body, locals }) => {
         let eventLength = events.length, eventIdx = 0;
         let mappedEventLength = mappedEventIds.length, mappedEventIdx = 0;
         let totalResults = venueLength + allEvents.length;
-
+        
         const eventsMap = {};
         for (let i = 0; i < allEvents.length; i++) {
-            eventsMap[allEvents[i]._id] = i;
+            eventsMap[allEvents[i].id] = i;
         }
         const searchResults = [];
         while (searchResults.length < totalResults) {
