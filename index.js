@@ -1,8 +1,11 @@
+import 'dotenv/config';
 import express from "express";
 import cors from "cors";
 import _db from "./util/db.js";
 import router from "./routes/index.js";
 import initServices from "./service/init.js";
+import { applicationDefault, initializeApp } from 'firebase-admin/app';
+initializeApp({ credential: applicationDefault() });
 
 const run = async () => {
 	const app = express();

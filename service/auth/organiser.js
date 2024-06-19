@@ -1,6 +1,6 @@
 import { REFRESH_TOKEN_EXPIRE_TIME } from "../../constants/index.js";
 import OrganiserOtp from "../../model/OrganiserOtp.js";
-import { sendOtpResetPassword } from "../../util/mail/index.js";
+import CommsModule from "../../service/comms/index.js";
 import Module from "../../service/app/event.js";
 import Organiser from "../../model/Organiser.js";
 import {
@@ -37,7 +37,7 @@ const forgotPassword = async ({ body }) => {
       ],
       session
     );
-    await sendOtpResetPassword(email, OTP);
+    await CommsModule.mail.sendOtpResetPassword(email, OTP);
     await session.commitTransaction();
   } catch (err) {
     await session.abortTransaction();

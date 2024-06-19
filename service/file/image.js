@@ -2,7 +2,6 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { S3_BUCKET_ID } from "../../constants/index.js";
 import { randomId } from "../../util/index.js";
-import TempImage from "../../model/TempImage.js";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 2;
 const client = new S3Client();
@@ -26,7 +25,6 @@ const POST = async ({ body }) => {
     }
 
     const key = `${randomId()}.${extension}`;
-    await TempImage.create({ key });
 
     return {
         key,

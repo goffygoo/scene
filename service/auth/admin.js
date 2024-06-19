@@ -1,7 +1,7 @@
 import { REFRESH_TOKEN_EXPIRE_TIME } from "../../constants/index.js";
 import AdminOtp from "../../model/AdminOtp.js";
-import { sendOtpResetPassword } from "../../util/mail/index.js";
 import Admin from "../../model/Admin.js";
+import CommsModule from "../../service/comms/index.js";
 import {
   decodeAccessToken,
   generateAccessToken,
@@ -33,7 +33,7 @@ const forgotPassword = async ({ body }) => {
       ],
       session
     );
-    await sendOtpResetPassword(email, OTP);
+    await CommsModule.mail.sendOtpResetPassword(email, OTP);
     await session.commitTransaction();
   } catch (err) {
     await session.abortTransaction();
@@ -83,6 +83,7 @@ const login = async ({ body }) => {
     userId,
     email,
     admin: true,
+    ...(admin.superAdmin && { superAdmin: true }),
   });
   return {
     refreshToken,
@@ -106,6 +107,7 @@ const newAccessToken = async ({ body }) => {
     userId,
     email: admin.email,
     admin: true,
+    ...(admin.superAdmin && { superAdmin: true }),
   });
   return {
     accessToken,

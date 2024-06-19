@@ -1,8 +1,12 @@
 import { Client } from '@elastic/elasticsearch'
-import { LOG_TYPES } from '../../constants/index.js';
+import { LOG_TYPES, enableESLogging } from '../../constants/index.js';
 import config from "../../constants/config.js";
-import { ErrorSchema, LogSchema } from './schema.js';
+import { ErrorSchema, EventSchema, LogSchema } from './schema.js';
 const { ES_CA, ES_PASSWORD, ES_URL, ES_USERNAME } = config;
+
+const LogsLifecycle = 7;
+const ErrorsLifecycle = 14;
+const EventsLifecycle = 7;
 
 let ErrorCount = 0;
 let ErrorCountLogDate = Date.now();
@@ -64,19 +68,58 @@ const createErrorIndex = async () => {
     });
 }
 
-const dropLogIndex = async () => {
-    return ElasticSearch.indices.delete({
-        index: getIndexName(LOG_TYPES.LOG),
-    })
+const createEventIndex = async () => {
+    return ElasticSearch.indices.create({
+        index: getIndexName(LOG_TYPES.EVENT),
+        mappings: {
+            dynamic: 'strict',
+            properties: EventSchema,
+        },
+        settings: {
+            refresh_interval: '30s',
+        }
+    });
 }
 
-const dropErrorIndex = async () => {
+const createFELogIndex = async () => {
+    return ElasticSearch.indices.create({
+        index: getIndexName(LOG_TYPES.FE_LOG),
+        mappings: {
+            dynamic: 'strict',
+            properties: LogSchema,
+        },
+        settings: {
+            refresh_interval: '30s',
+        }
+    });
+}
+
+const dropLogIndex = async (dateStamp) => {
     return ElasticSearch.indices.delete({
-        index: getIndexName(LOG_TYPES.ERROR),
-    })
+        index: getIndexName(LOG_TYPES.LOG, dateStamp),
+    });
+}
+
+const dropErrorIndex = async (dateStamp) => {
+    return ElasticSearch.indices.delete({
+        index: getIndexName(LOG_TYPES.ERROR, dateStamp),
+    });
+}
+
+const dropEventIndex = async (dateStamp) => {
+    return ElasticSearch.indices.delete({
+        index: getIndexName(LOG_TYPES.EVENT, dateStamp),
+    });
+}
+
+const dropFELogIndex = async (dateStamp) => {
+    return ElasticSearch.indices.delete({
+        index: getIndexName(LOG_TYPES.FE_LOG, dateStamp),
+    });
 }
 
 export const addDocument = async (type, data) => {
+    if (!enableESLogging) return;
     return ElasticSearch.index({
         index: getIndexName(type),
         document: data,
@@ -85,9 +128,36 @@ export const addDocument = async (type, data) => {
 }
 
 export const createIndexes = async () => {
+    if (!enableESLogging) return;
     await createLogIndex().catch(catchErr);
     await createErrorIndex().catch(catchErr);
+    await createEventIndex().catch(catchErr);
+    await createFELogIndex().catch(catchErr);
+}
 
-    // await dropLogIndex().catch(catchErr);
-    // await dropErrorIndex().catch(catchErr);
+export const dropIndexes = async ({
+    logStamp,
+    errorStamp,
+    eventStamp
+}) => {
+    if (!enableESLogging) return;
+
+    let date = undefined;
+
+    date = new Date();
+    date.setDate(date.getDate() - LogsLifecycle);
+    const logsTimeStamp = logStamp ?? getDateStamp(date);
+
+    date = new Date();
+    date.setDate(date.getDate() - ErrorsLifecycle);
+    const errorsTimeStamp = errorStamp ?? getDateStamp(date);
+
+    date = new Date();
+    date.setDate(date.getDate() - EventsLifecycle);
+    const eventsTimeStamp = eventStamp ?? getDateStamp(date);
+
+    await dropLogIndex(logsTimeStamp).catch(catchErr);
+    await dropErrorIndex(errorsTimeStamp).catch(catchErr);
+    await dropEventIndex(eventsTimeStamp).catch(catchErr);
+    await dropFELogIndex(logsTimeStamp).catch(catchErr);
 }

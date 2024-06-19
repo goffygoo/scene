@@ -1,7 +1,6 @@
 import cron from "node-cron";
 import DashboardModule from "./dashboard/index.js";
 import LogModule from "./log/index.js";
-import { enableESLogging } from "../constants/index.js";
 
 const initScheduler = () => {
     cron.schedule("*/2 * * * *", DashboardModule.feature.pollFeatureConfig);
@@ -11,6 +10,7 @@ const initScheduler = () => {
 export default async function () {
     await DashboardModule.feature.pollFeatureConfig();
     await DashboardModule.appConfig.pollAppConfig();
-    if (enableESLogging) await LogModule.createIndexes();
+    await DashboardModule.query.buildQueries();
+    await LogModule.createIndexes();
     initScheduler();
 }
