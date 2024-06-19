@@ -60,3 +60,12 @@ export const httpRequest = async (method, url, body, config) => {
 export const randomId = () => {
     return randomUUID().split("-").join("");
 }
+
+export const splitChunks = (arr, chunkSize) => {
+    const parsedArray = [];
+    for (let i = 0; i < arr.length; i += chunkSize) {
+        const chunk = arr.slice(i, i + chunkSize);
+        parsedArray.push(chunk);
+    }
+    return parsedArray;
+}

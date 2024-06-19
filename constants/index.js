@@ -30,7 +30,9 @@ export const S3_BUCKET_ID = "goffygoo-static-images";
 
 export const LOG_TYPES = {
     LOG: "log",
-    ERROR: "error"
+    ERROR: "error",
+    EVENT: "event",
+    FE_LOG: "felog",
 }
 
 export const enableESLogging = false;

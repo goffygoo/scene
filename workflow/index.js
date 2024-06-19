@@ -15,7 +15,7 @@ const run = async () => {
     let success = true;
     try {
         const workflowName = argv[3];
-        const params = JSON.parse(argv[4]);
+        const params = argv[4] ? JSON.parse(argv[4]) : {};
         const workflow = await import(`./${workflowName}.js`);
         const fn = workflow.default;
         await fn(params);
@@ -33,4 +33,10 @@ const run = async () => {
     );
 }
 
-run();
+run().then(() => {
+    console.log("Workflow executed successfully.");
+    process.exit(0);
+}).catch((err) => {
+    console.log(err);
+    process.exit(-1);
+});
