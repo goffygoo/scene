@@ -1,9 +1,7 @@
-import { enableESLogging } from "../constants/index.js";
 import LogModule from "../service/log/index.js";
 import asyncLocalStorage from "../util/asyncStorage.js";
 
 const log = async (data, key2, metric) => {
-  if (!enableESLogging) return;
   const txnId = asyncLocalStorage.getStore();
   LogModule.log({
     data: JSON.stringify(data),

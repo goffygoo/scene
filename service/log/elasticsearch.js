@@ -1,5 +1,5 @@
 import { Client } from '@elastic/elasticsearch'
-import { LOG_TYPES } from '../../constants/index.js';
+import { LOG_TYPES, enableESLogging } from '../../constants/index.js';
 import config from "../../constants/config.js";
 import { ErrorSchema, EventSchema, LogSchema } from './schema.js';
 const { ES_CA, ES_PASSWORD, ES_URL, ES_USERNAME } = config;
@@ -119,6 +119,7 @@ const dropFELogIndex = async (dateStamp) => {
 }
 
 export const addDocument = async (type, data) => {
+    if (!enableESLogging) return;
     return ElasticSearch.index({
         index: getIndexName(type),
         document: data,
@@ -127,6 +128,7 @@ export const addDocument = async (type, data) => {
 }
 
 export const createIndexes = async () => {
+    if (!enableESLogging) return;
     await createLogIndex().catch(catchErr);
     await createErrorIndex().catch(catchErr);
     await createEventIndex().catch(catchErr);
@@ -138,6 +140,8 @@ export const dropIndexes = async ({
     errorStamp,
     eventStamp
 }) => {
+    if (!enableESLogging) return;
+
     let date = undefined;
 
     date = new Date();
