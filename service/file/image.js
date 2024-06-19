@@ -28,7 +28,7 @@ const POST = async ({ body }) => {
 
     return {
         key,
-        url: `http://192.168.1.11:5002/upload?key=${key}`
+        url: `http://192.168.1.3:5002/upload?key=${key}`
     };
 }
 

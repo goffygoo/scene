@@ -7,6 +7,7 @@ import {
   types,
   venueTags,
 } from "../../constants/liveConfig.js";
+import { GENDER } from "../../constants/index.js";
 import CacheModule from "../cache/index.js";
 import CommsModule from "../comms/index.js";
 
@@ -34,12 +35,16 @@ const getSpecialEventTags = async () => {
   return Object.values(eventTagsSpecial);
 };
 
+const getGenders = async () => {
+  return Object.values(GENDER);
+};
 const getAppConfig = async ({ body, locals }) => {
   const { userId } = locals.userData;
   const { city, fcmToken } = body;
   const events = CacheModule.appConfig.getTopEvents(city);
   const venues = CacheModule.appConfig.getTopVenues(city);
-  if (fcmToken && userId) await CommsModule.notification.addFCMToken(userId, fcmToken);
+  if (fcmToken && userId)
+    await CommsModule.notification.addFCMToken(userId, fcmToken);
   return { events, venues };
 };
 
@@ -51,7 +56,8 @@ export default {
     getVenueTags,
     getTimeTags,
     getSpecialEventTags,
-    getAppConfig
+    getGenders,
+    getAppConfig,
   },
   venue,
   getCities,
