@@ -1,6 +1,6 @@
 import _db from "../util/db.js";
 import Admin from "../model/Admin.js";
-const adminEmails = ["vineetoli52@gmail.com"];
+const adminEmails = ["askhan.ak912@gmail.com"];
 const createArray = adminEmails.map((email) => ({
   email,
   password: " ",
