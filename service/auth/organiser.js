@@ -10,41 +10,23 @@ import {
   generateOtp,
   generateRefreshToken,
 } from "./utils.js";
-import db from "../../util/db.js";
 
 const forgotPassword = async ({ body }) => {
   const { email } = body;
-  let session = null;
-  try {
-    session = await db.startSession();
-    session.startTransaction();
-    const organiser = await Organiser.findOneAndSelect(
-      { email },
-      { _id: 1 },
-      session
-    );
-    if (!organiser) {
-      throw Error();
-    }
-    const OTP = generateOtp();
-    await OrganiserOtp.deleteOne({ email }, session);
-    await OrganiserOtp.create(
-      [
-        {
-          email,
-          value: OTP,
-        },
-      ],
-      session
-    );
-    await CommsModule.mail.sendOtpResetPassword(email, OTP);
-    await session.commitTransaction();
-  } catch (err) {
-    await session.abortTransaction();
-    throw err;
-  } finally {
-    await session.endSession();
+  const organiser = await Organiser.findOneAndSelect(
+    { email },
+    { _id: 1 }
+  );
+  if (!organiser) {
+    throw Error('Invalid email');
   }
+  const OTP = generateOtp();
+  await OrganiserOtp.deleteOne({ email });
+  await OrganiserOtp.create({
+    email,
+    value: OTP,
+  });
+  await CommsModule.mail.sendOtpResetPassword(email, OTP);
 };
 
 const verifyOtp = async ({ body }) => {

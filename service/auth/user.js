@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../../model/User.js";
 import Otp from "../../model/UserOtp.js";
-import db from "../../util/db.js";
 import {
   generateAccessToken,
   generateOtp,
@@ -20,88 +19,55 @@ const {
 
 const login = async ({ body }) => {
   const { email } = body;
-  let session = null;
-  try {
-    session = await db.startSession();
-    session.startTransaction();
-    const OTP = generateOtp();
-    await Otp.deleteOne({ email }, session);
-    await Otp.create(
-      [
-        {
-          email,
-          value: OTP,
-        },
-      ],
-      session
-    );
-    await CommsModule.mail.sendOtpMail(email, OTP);
-    await session.commitTransaction();
-  } catch (err) {
-    await session.abortTransaction();
-    throw err;
-  } finally {
-    await session.endSession();
-  }
+  const OTP = generateOtp();
+  await Otp.deleteOne({ email });
+  await Otp.create({
+    email,
+    value: OTP,
+  });
+  await CommsModule.mail.sendOtpMail(email, OTP);
 };
 
 const verifyOtp = async ({ body }) => {
   const { otp, email } = body;
-  let session = null;
-  try {
-    session = await db.startSession();
-    session.startTransaction();
-    const otpObject = await Otp.findOne({ email }, session);
-    if (!otpObject || otpObject.value !== otp) throw Error();
-    await Otp.deleteOne({ email }, session);
-    const user = await User.findOne({ email }, session);
-    let refreshToken = generateRefreshToken();
-    let tokenEAT = Date.now() + REFRESH_TOKEN_EXPIRE_TIME;
-    let userId;
-    if (!user) {
-      const [newUser] = await User.create(
-        [
-          {
-            email,
-            refreshToken,
-            tokenEAT,
-          },
-        ],
-        session
-      );
-      userId = newUser._id;
-    } else {
-      userId = user._id;
-      if (!user.refreshToken || user.tokenEAT <= Date.now()) {
-        await User.findByIdAndUpdate(
-          userId,
-          {
-            refreshToken,
-            tokenEAT,
-          },
-          session
-        );
-      } else {
-        refreshToken = user.refreshToken;
-      }
-    }
-    const accessToken = generateAccessToken({
-      userId,
+  const otpObject = await Otp.findOne({ email });
+  if (!otpObject || otpObject.value !== otp) throw Error('Invalid Email or OTP');
+  await Otp.deleteOne({ email });
+  const user = await User.findOne({ email });
+  let refreshToken = generateRefreshToken();
+  let tokenEAT = Date.now() + REFRESH_TOKEN_EXPIRE_TIME;
+  let userId;
+  if (!user) {
+    const newUser = await User.create({
       email,
-    });
-    await session.commitTransaction();
-    return {
       refreshToken,
-      accessToken,
-      userId,
-      ...(user && user.profileComplete && { profile: user.profile }),
-    };
-  } catch (err) {
-    await session.abortTransaction();
-    throw err;
-  } finally {
-    await session.endSession();
+      tokenEAT,
+    });
+    userId = newUser._id;
+  } else {
+    userId = user._id;
+    if (!user.refreshToken || user.tokenEAT <= Date.now()) {
+      await User.findByIdAndUpdate(
+        userId,
+        {
+          refreshToken,
+          tokenEAT,
+        }
+      );
+    } else {
+      refreshToken = user.refreshToken;
+    }
   }
+  const accessToken = generateAccessToken({
+    userId,
+    email,
+  });
+  return {
+    refreshToken,
+    accessToken,
+    userId,
+    ...(user && user.profileComplete && { profile: user.profile }),
+  };
 };
 
 const googleLogin = async ({ body }) => {
