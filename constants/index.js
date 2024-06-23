@@ -26,7 +26,8 @@ export const MODEL_INDEX = {
     VENUE: "venue",
 };
 
-export const S3_BUCKET_ID = "goffygoo-static-images";
+export const S3_BUCKET_ID = "baljeetkode-project-w-static";
+export const S3_CDN_URL = "d2dgbj1h085qlp.cloudfront.net";
 
 export const LOG_TYPES = {
     LOG: "log",
