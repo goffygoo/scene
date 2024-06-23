@@ -9,7 +9,7 @@ const initScheduler = () => {
 
 export default async function () {
     await DashboardModule.feature.pollFeatureConfig();
-    // await DashboardModule.appConfig.pollAppConfig();
+    await DashboardModule.appConfig.pollAppConfig();
     await DashboardModule.query.buildQueries();
     await LogModule.createIndexes();
     initScheduler();
