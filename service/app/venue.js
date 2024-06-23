@@ -1,5 +1,4 @@
 import Venue from "../../model/Venue.js";
-import { deleteFilesBulk, saveFilesBulk } from "../../util/files.js";
 import { cities, types, venueTags } from "../../constants/liveConfig.js";
 import VenueMS from "./search/model/Venue.js";
 import VenueUpdate from "../../model/VenueUpdate.js";
