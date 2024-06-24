@@ -36,7 +36,7 @@ export const LOG_TYPES = {
     FE_LOG: "felog",
 }
 
-export const enableESLogging = false;
+export const enableESLogging = true;
 
 export const DataTypes = {
     string: "string",
