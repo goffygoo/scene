@@ -20,13 +20,13 @@ const sendMailToUser = async (email, subject, html) => {
             subject,
             html,
         };
-        transporter.sendMail(mailOptions, () => undefined);
+        await transporter.sendMail(mailOptions);
     } catch (_e) {}
 };
 
 const sendOtpMail = async (email, otp) => {
     const template = otpTemplate(otp);
-    sendMailToUser(
+    return sendMailToUser(
         email,
         'OTP for BaljeetKode login',
         template
@@ -35,7 +35,7 @@ const sendOtpMail = async (email, otp) => {
 
 const sendOtpResetPassword = async (email, otp) => {
     const template = otpResetPasswordTemplate(otp);
-    sendMailToUser(
+    return sendMailToUser(
         email,
         'OTP for BaljeetKode Password Reset',
         template

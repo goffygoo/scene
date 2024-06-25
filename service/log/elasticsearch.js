@@ -30,7 +30,7 @@ const getIndexName = (type, dateStamp) => {
     return 'w-' + type + '-' + DateStamp;
 }
 
-const catchErr = () => {
+const catchErr = (_e) => {
     if (++ErrorCount >= 16) {
         console.log(
             ErrorCount + " new Errors in ElasticSearch in last "
@@ -120,19 +120,27 @@ const dropFELogIndex = async (dateStamp) => {
 
 export const addDocument = async (type, data) => {
     if (!enableESLogging) return;
-    return ElasticSearch.index({
-        index: getIndexName(type),
-        document: data,
-        refresh: 'false',
-    })
+    try {
+        await ElasticSearch.index({
+            index: getIndexName(type),
+            document: data,
+            refresh: 'false',
+        });
+    } catch (_e) {
+        catchErr(_e);
+    }
 }
 
 export const createIndexes = async () => {
     if (!enableESLogging) return;
-    await createLogIndex().catch(catchErr);
-    await createErrorIndex().catch(catchErr);
-    await createEventIndex().catch(catchErr);
-    await createFELogIndex().catch(catchErr);
+    try {
+        await createLogIndex();
+        await createErrorIndex();
+        await createEventIndex();
+        await createFELogIndex();
+    } catch (_e) {
+        catchErr(_e);
+    }
 }
 
 export const dropIndexes = async ({
@@ -156,8 +164,12 @@ export const dropIndexes = async ({
     date.setDate(date.getDate() - EventsLifecycle);
     const eventsTimeStamp = eventStamp ?? getDateStamp(date);
 
-    await dropLogIndex(logsTimeStamp).catch(catchErr);
-    await dropErrorIndex(errorsTimeStamp).catch(catchErr);
-    await dropEventIndex(eventsTimeStamp).catch(catchErr);
-    await dropFELogIndex(logsTimeStamp).catch(catchErr);
+    try {
+        await dropLogIndex(logsTimeStamp);
+        await dropErrorIndex(errorsTimeStamp);
+        await dropEventIndex(eventsTimeStamp);
+        await dropFELogIndex(logsTimeStamp);
+    } catch (_e) {
+        catchErr(_e);
+    }
 }

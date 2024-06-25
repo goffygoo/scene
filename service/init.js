@@ -4,7 +4,7 @@ import LogModule from "./log/index.js";
 
 const initScheduler = () => {
     cron.schedule("*/2 * * * *", DashboardModule.feature.pollFeatureConfig);
-    cron.schedule("*/1 * * * *", DashboardModule.appConfig.pollAppConfig);
+    cron.schedule("*/5 * * * *", DashboardModule.appConfig.pollAppConfig);
 }
 
 export default async function () {
