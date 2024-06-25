@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "build": "sh scripts/copyConfig.sh && npm ci",
     "venue:index": "CITY_KEY='delhi' node scripts/createVenueIndex.js",
     "event:index": "CITY_KEY='delhi' node scripts/createEventIndex.js",
     "create-super-admin": "node scripts/createSuperAdmin.js"
