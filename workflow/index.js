@@ -22,15 +22,15 @@ const run = async () => {
     } catch (_e) {
         success = false;
     }
-    await httpRequest(
-        "post",
-        `${WORKFLOW_ORCHESTRATOR}/terminated`,
-        {
-            id: workflowKey,
-            success,
-        },
-        orchestratorConfig
-    );
+    // await httpRequest(
+    //     "post",
+    //     `${WORKFLOW_ORCHESTRATOR}/terminated`,
+    //     {
+    //         id: workflowKey,
+    //         success,
+    //     },
+    //     orchestratorConfig
+    // );
 }
 
 run().then(() => {
