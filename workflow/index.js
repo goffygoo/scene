@@ -1,3 +1,5 @@
+import fs from "fs";
+import https from "https";
 import { httpRequest } from "../util/index.js";
 import config from "../constants/config.js";
 
@@ -5,8 +7,9 @@ const { WORKFLOW_ORCHESTRATOR, WORKFLOW_ORCHESTRATOR_SECRET } = config;
 
 const orchestratorConfig = {
     headers: {
-        Authorization: `${WORKFLOW_ORCHESTRATOR_SECRET}`
-    }
+        Authorization: `${WORKFLOW_ORCHESTRATOR_SECRET}`,
+    },
+    httpsAgent: new https.Agent({ca: fs.readFileSync('constants/myCA.pem')})
 }
 
 const run = async () => {
