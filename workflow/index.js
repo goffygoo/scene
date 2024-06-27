@@ -26,7 +26,7 @@ const run = async () => {
         "post",
         `${WORKFLOW_ORCHESTRATOR}/terminated`,
         {
-            workflowKey,
+            id: workflowKey,
             success,
         },
         orchestratorConfig
