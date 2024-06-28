@@ -17,6 +17,7 @@ const run = async () => {
 
 	await initServices();
 
+	app.get("/", (_, res) => res.sendStatus(200));
 	app.use("/api", router);
 
 	app.listen(PORT, () => {
