@@ -5,6 +5,9 @@ import _db from "./util/db.js";
 import router from "./routes/index.js";
 import initServices from "./service/init.js";
 import { applicationDefault, initializeApp } from 'firebase-admin/app';
+import https from "https";
+import fs from "fs";
+
 initializeApp({ credential: applicationDefault() });
 
 const run = async () => {
@@ -20,9 +23,18 @@ const run = async () => {
 	app.get("/", (_, res) => res.sendStatus(200));
 	app.use("/api", router);
 
-	app.listen(PORT, () => {
+	if (process.env.NODE_ENV === 'production') {
+		const httpsOptions = {
+			key: fs.readFileSync('cert/baljeetkode.private.key'),
+			cert: fs.readFileSync('cert/baljeetkode.certificate.crt')
+		};
+		https.createServer(httpsOptions, app).listen(PORT);
 		console.log(`Server starting in port: ${PORT}`);
-	});
+	} else {
+		app.listen(PORT, () => {
+			console.log(`Server starting in port: ${PORT}`);
+		});
+	}
 }
 
 run();
