@@ -27,9 +27,7 @@ const run = async () => {
 		const httpsOptions = {
 			key: fs.readFileSync('cert/baljeetkode.private.key'),
 			cert: fs.readFileSync('cert/baljeetkode.certificate.crt'),
-			ca: [
-				fs.readFileSync('cert/baljeetkode.ca.crt')
-			]
+			ca: fs.readFileSync('cert/baljeetkode.ca.crt'),
 		};
 		https.createServer(httpsOptions, app).listen(PORT);
 		console.log(`Server starting in port: ${PORT}`);
