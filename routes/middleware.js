@@ -28,7 +28,7 @@ export const wrapper = (fn) => async (req, res) => {
     })
     .catch((err) => {
       LogModule.error({
-        data: err.toString(),
+        data: JSON.stringify(err),
         key1: api,
         metric: Date.now() - startTime,
         txnId,
