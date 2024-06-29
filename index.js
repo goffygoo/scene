@@ -26,7 +26,10 @@ const run = async () => {
 	if (process.env.NODE_ENV === 'production') {
 		const httpsOptions = {
 			key: fs.readFileSync('cert/baljeetkode.private.key'),
-			cert: fs.readFileSync('cert/baljeetkode.certificate.crt')
+			cert: fs.readFileSync('cert/baljeetkode.certificate.crt'),
+			ca: [
+				fs.readFileSync('cert/baljeetkode.ca.crt')
+			]
 		};
 		https.createServer(httpsOptions, app).listen(PORT);
 		console.log(`Server starting in port: ${PORT}`);
