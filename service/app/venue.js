@@ -2,6 +2,8 @@ import Venue from "../../model/Venue.js";
 import { cities, types, venueTags } from "../../constants/liveConfig.js";
 import VenueMS from "./search/model/Venue.js";
 import VenueUpdate from "../../model/VenueUpdate.js";
+import { httpRequest } from "../../util/index.js";
+import config from "../../constants/config.js";
 
 const POST = async ({ body, locals }) => {
   const {
@@ -245,11 +247,21 @@ const deleteVenue = async (venueId) => {
   ]);
 };
 
+const getPlace = async ({ body }) => {
+  const { query } = body;
+  const googleApiEndpoint =
+    "https://maps.googleapis.com/maps/api/place/textsearch/json";
+  const url = `${googleApiEndpoint}?query=${query}&key=${config.GOOGLE_PLACES_API_KEY}`;
+  const { results } = await httpRequest("get", url, {}, {});
+  return { places: results };
+};
+
 export default {
   service: {
     POST,
     PATCH,
     GET,
+    getPlace,
   },
   createVenue,
   getVenue,
