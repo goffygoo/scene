@@ -13,7 +13,7 @@ const Schema = new mongoose.Schema({
     },
     expireAt: {
         type: Date,
-        expires: '120s',
+        expires: '600s',
         default: Date.now
     }
 });
