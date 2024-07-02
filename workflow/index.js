@@ -9,7 +9,7 @@ const orchestratorConfig = {
     headers: {
         Authorization: `${WORKFLOW_ORCHESTRATOR_SECRET}`,
     },
-    httpsAgent: new https.Agent({ca: fs.readFileSync('constants/myCA.pem')})
+    httpsAgent: new https.Agent({ca: fs.readFileSync('cert/myCA.pem')})
 }
 
 const run = async () => {
