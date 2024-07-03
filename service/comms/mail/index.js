@@ -23,8 +23,11 @@ const sendMailToUser = async (email, subject, html) => {
             subject,
             html,
         };
-        await transporter.sendMail(mailOptions);
-    } catch (_e) {}
+       const s = await transporter.sendMail(mailOptions);
+       console.log(s);
+    } catch (_e) {
+       console.log(_e);
+    }
 };
 
 const sendOtpMail = async (email, otp) => {
