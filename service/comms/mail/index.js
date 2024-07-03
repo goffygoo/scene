@@ -13,7 +13,7 @@ let transporter = nodemailer.createTransport({
         user: MAILER_ID,
         pass: MAILER_PASSWORD
     },
-    debug: true,
+    logger: true 
 });
 
 const sendMailToUser = async (email, subject, html) => {
