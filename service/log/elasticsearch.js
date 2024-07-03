@@ -43,9 +43,9 @@ const catchErr = (_e) => {
     }
 }
 
-const createLogIndex = async () => {
+const createLogIndex = async (dateStamp) => {
     return ElasticSearch.indices.create({
-        index: getIndexName(LOG_TYPES.LOG),
+        index: getIndexName(LOG_TYPES.LOG, dateStamp),
         mappings: {
             dynamic: 'strict',
             properties: LogSchema,
@@ -56,9 +56,9 @@ const createLogIndex = async () => {
     });
 }
 
-const createErrorIndex = async () => {
+const createErrorIndex = async (dateStamp) => {
     return ElasticSearch.indices.create({
-        index: getIndexName(LOG_TYPES.ERROR),
+        index: getIndexName(LOG_TYPES.ERROR, dateStamp),
         mappings: {
             dynamic: 'strict',
             properties: ErrorSchema,
@@ -69,9 +69,9 @@ const createErrorIndex = async () => {
     });
 }
 
-const createEventIndex = async () => {
+const createEventIndex = async (dateStamp) => {
     return ElasticSearch.indices.create({
-        index: getIndexName(LOG_TYPES.EVENT),
+        index: getIndexName(LOG_TYPES.EVENT, dateStamp),
         mappings: {
             dynamic: 'strict',
             properties: EventSchema,
@@ -82,9 +82,9 @@ const createEventIndex = async () => {
     });
 }
 
-const createFELogIndex = async () => {
+const createFELogIndex = async (dateStamp) => {
     return ElasticSearch.indices.create({
-        index: getIndexName(LOG_TYPES.FE_LOG),
+        index: getIndexName(LOG_TYPES.FE_LOG, dateStamp),
         mappings: {
             dynamic: 'strict',
             properties: FeLogSchema,
@@ -136,13 +136,16 @@ export const addDocument = async (type, data) => {
     }
 }
 
-export const createIndexes = async () => {
+export const createIndexes = async (forNextDay) => {
     if (!enableESLogging) return;
     try {
-        await createLogIndex();
-        await createErrorIndex();
-        await createEventIndex();
-        await createFELogIndex();
+        const date = new Date();
+        date.setDate(date.getDate() + 1);
+        const dateStamp = forNextDay ? getDateStamp(dateStamp): undefined;
+        await createLogIndex(dateStamp);
+        await createErrorIndex(dateStamp);
+        await createEventIndex(dateStamp);
+        await createFELogIndex(dateStamp);
     } catch (_e) {
         catchErr(_e);
     }
