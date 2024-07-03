@@ -24,7 +24,7 @@ const ElasticSearch = new Client({
     }
 });
 
-const getDateStamp = date => date.toISOString().split('T')[0];
+const getDateStamp = date => date.toLocaleString('sv').split(' ')[0];
 
 const getIndexName = (type, dateStamp) => {
     const DateStamp = dateStamp ?? getDateStamp(new Date());
