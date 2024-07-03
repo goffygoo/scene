@@ -6,9 +6,9 @@ const { MAILER_ID, MAILER_PASSWORD } = config;
 
 let transporter = nodemailer.createTransport({
     service: 'Godaddy',
-    host: "smtpout.secureserver.net",  
-    secureConnection: true,
-    port: 465,
+    // host: "smtpout.secureserver.net",  
+    // secureConnection: false,
+    // port: 465,
     auth: {
         user: MAILER_ID,
         pass: MAILER_PASSWORD
