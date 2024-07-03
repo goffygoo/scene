@@ -14,7 +14,9 @@ export const LogSchema = {
 }
 
 export const ErrorSchema = {
-    data: { type: 'text' },
+    error: { type: 'text' },
+    message: { type: 'text' },
+    stack: { type: 'text' },
     date: { type: 'date' },
     key1: { type: 'keyword' },
     key2: { type: 'keyword' },
@@ -36,5 +38,18 @@ export const EventSchema = {
     type: {
         type: 'constant_keyword',
         value: LOG_TYPES.EVENT,
+    },
+}
+
+export const FeLogSchema = {
+    data: { type: 'text' },
+    date: { type: 'date' },
+    key1: { type: 'keyword' },
+    key2: { type: 'keyword' },
+    metric: { type: 'integer' },
+    txnId: { type: 'keyword' },
+    type: {
+        type: 'constant_keyword',
+        value: LOG_TYPES.FE_LOG,
     },
 }

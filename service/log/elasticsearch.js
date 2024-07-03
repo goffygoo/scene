@@ -1,12 +1,13 @@
 import { Client } from '@elastic/elasticsearch'
 import { LOG_TYPES, enableESLogging } from '../../constants/index.js';
 import config from "../../constants/config.js";
-import { ErrorSchema, EventSchema, LogSchema } from './schema.js';
+import { ErrorSchema, EventSchema, FeLogSchema, LogSchema } from './schema.js';
 const { ES_CA, ES_PASSWORD, ES_URL, ES_USERNAME } = config;
 
 const LogsLifecycle = 7;
-const ErrorsLifecycle = 14;
+const ErrorsLifecycle = 30;
 const EventsLifecycle = 7;
+const FeLogsLifecycle = 7;
 
 let ErrorCount = 0;
 let ErrorCountLogDate = Date.now();
@@ -86,7 +87,7 @@ const createFELogIndex = async () => {
         index: getIndexName(LOG_TYPES.FE_LOG),
         mappings: {
             dynamic: 'strict',
-            properties: LogSchema,
+            properties: FeLogSchema,
         },
         settings: {
             refresh_interval: '30s',
@@ -123,7 +124,11 @@ export const addDocument = async (type, data) => {
     try {
         await ElasticSearch.index({
             index: getIndexName(type),
-            document: data,
+            document: {
+                ...data,
+                date: (new Date()).toISOString(),
+                type,
+            },
             refresh: 'false',
         });
     } catch (_e) {
@@ -146,7 +151,8 @@ export const createIndexes = async () => {
 export const dropIndexes = async ({
     logStamp,
     errorStamp,
-    eventStamp
+    eventStamp,
+    feLogStamp,
 }) => {
     if (!enableESLogging) return;
 
@@ -164,11 +170,15 @@ export const dropIndexes = async ({
     date.setDate(date.getDate() - EventsLifecycle);
     const eventsTimeStamp = eventStamp ?? getDateStamp(date);
 
+    date = new Date();
+    date.setDate(date.getDate() - FeLogsLifecycle);
+    const feLogsTimeStamp = feLogStamp ?? getDateStamp(date);
+
     try {
         await dropLogIndex(logsTimeStamp);
         await dropErrorIndex(errorsTimeStamp);
         await dropEventIndex(eventsTimeStamp);
-        await dropFELogIndex(logsTimeStamp);
+        await dropFELogIndex(feLogsTimeStamp);
     } catch (_e) {
         catchErr(_e);
     }

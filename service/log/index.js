@@ -10,7 +10,6 @@ const log = ({
 }) => {
     return addDocument(LOG_TYPES.LOG, {
         data,
-        date: (new Date()).toISOString(),
         key1,
         key2,
         metric,
@@ -26,7 +25,6 @@ const error = ({
 }) => {
     return addDocument(LOG_TYPES.ERROR, {
         data,
-        date: (new Date()).toISOString(),
         key1,
         key2,
         txnId
@@ -43,7 +41,6 @@ const event = ({ body, locals }) => {
     const { device, bundleVersion } = locals;
     return addDocument(LOG_TYPES.EVENT, {
         data,
-        date: (new Date()).toISOString(),
         name,
         city,
         action,
@@ -59,9 +56,8 @@ const feLog = ({ body }) => {
         key2,
         metric
     } = body;
-    return addDocument(LOG_TYPES.LOG, {
+    return addDocument(LOG_TYPES.FE_LOG, {
         data,
-        date: (new Date()).toISOString(),
         key1,
         key2,
         metric
