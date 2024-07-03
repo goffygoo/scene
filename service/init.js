@@ -7,15 +7,15 @@ const createIndexes = async () => {
 }
 
 const initScheduler = () => {
+    cron.schedule("55 23 * * *", createIndexes);
     cron.schedule("*/2 * * * *", DashboardModule.feature.pollFeatureConfig);
     cron.schedule("*/5 * * * *", DashboardModule.appConfig.pollAppConfig);
-    cron.schedule("55 23 * * *", createIndexes);
 }
 
 export default async function () {
+    await LogModule.createIndexes();
     await DashboardModule.feature.pollFeatureConfig();
     await DashboardModule.appConfig.pollAppConfig();
     await DashboardModule.query.buildQueries();
-    await LogModule.createIndexes();
     initScheduler();
 }

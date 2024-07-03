@@ -31,15 +31,19 @@ const getIndexName = (type, dateStamp) => {
     return 'w-' + type + '-' + DateStamp;
 }
 
-const catchErr = (_e) => {
-    if (++ErrorCount >= 16) {
-        console.log(
-            ErrorCount + " new Errors in ElasticSearch in last "
-            + ((Date.now() - ErrorCountLogDate) / 1000)
-            + " seconds"
-        );
-        ErrorCountLogDate = Date.now();
-        ErrorCount = 0;
+const catchErr = async (fn) => {
+    try {
+        await fn();
+    } catch (_e) {
+        if (++ErrorCount >= 16) {
+            console.log(
+                ErrorCount + " new Errors in ElasticSearch in last "
+                + ((Date.now() - ErrorCountLogDate) / 1000)
+                + " seconds"
+            );
+            ErrorCountLogDate = Date.now();
+            ErrorCount = 0;
+        }
     }
 }
 
@@ -121,7 +125,7 @@ const dropFELogIndex = async (dateStamp) => {
 
 export const addDocument = async (type, data) => {
     if (!enableESLogging) return;
-    try {
+    await catchErr(async () => {
         await ElasticSearch.index({
             index: getIndexName(type),
             document: {
@@ -131,24 +135,26 @@ export const addDocument = async (type, data) => {
             },
             refresh: 'false',
         });
-    } catch (_e) {
-        catchErr(_e);
-    }
+    });
 }
 
 export const createIndexes = async (forNextDay) => {
     if (!enableESLogging) return;
-    try {
-        const date = new Date();
-        date.setDate(date.getDate() + 1);
-        const dateStamp = forNextDay ? getDateStamp(dateStamp): undefined;
+    const date = new Date();
+    date.setDate(date.getDate() + 1);
+    const dateStamp = forNextDay ? getDateStamp(dateStamp) : undefined;
+    await catchErr(async () => {
         await createLogIndex(dateStamp);
+    });
+    await catchErr(async () => {
         await createErrorIndex(dateStamp);
+    });
+    await catchErr(async () => {
         await createEventIndex(dateStamp);
+    });
+    await catchErr(async () => {
         await createFELogIndex(dateStamp);
-    } catch (_e) {
-        catchErr(_e);
-    }
+    });
 }
 
 export const dropIndexes = async ({
@@ -177,12 +183,16 @@ export const dropIndexes = async ({
     date.setDate(date.getDate() - FeLogsLifecycle);
     const feLogsTimeStamp = feLogStamp ?? getDateStamp(date);
 
-    try {
+    await catchErr(async () => {
         await dropLogIndex(logsTimeStamp);
+    });
+    await catchErr(async () => {
         await dropErrorIndex(errorsTimeStamp);
+    });
+    await catchErr(async () => {
         await dropEventIndex(eventsTimeStamp);
+    });
+    await catchErr(async () => {
         await dropFELogIndex(feLogsTimeStamp);
-    } catch (_e) {
-        catchErr(_e);
-    }
+    });
 }
