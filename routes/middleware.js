@@ -42,7 +42,6 @@ export const wrapper = (fn) => async (req, res) => {
         metric: Date.now() - startTime,
         txnId,
       });
-      console.log(err);
       return res.sendStatus(400);
     });
 };

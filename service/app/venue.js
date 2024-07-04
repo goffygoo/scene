@@ -51,11 +51,6 @@ const PATCH = async ({ body, locals }) => {
   const { userId: editor } = locals.userData;
   const venue = await getVenue(venueId);
   if (!venue) throw Error("Invalid Venue");
-  console.log({
-    tags,
-    keywords,
-    gallery,
-  });
   return createVenue({
     parent: venueId,
     bannerImage,

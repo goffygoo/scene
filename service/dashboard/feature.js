@@ -15,7 +15,6 @@ const GET = async ({ body }) => {
 
 const PATCH = async ({ body }) => {
     const { id, value, userIds } = body;
-    console.log(body);
     return Feature.findByIdAndUpdate(id, {
         ...((value !== undefined) && { value }),
         ...(userIds && { userIds }),
