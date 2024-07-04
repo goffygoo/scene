@@ -43,3 +43,11 @@ export const DataTypes = {
     boolean: "boolean",
     number: "number",
 }
+
+export const ApiRequestLogBlackList = [
+    ''
+]
+
+export const ApiResponseLogBlackList = [
+    ''
+]

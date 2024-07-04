@@ -1,5 +1,5 @@
 import Ajv from "ajv";
-import { HEADERS } from "../constants/index.js";
+import { HEADERS, ApiRequestLogBlackList, ApiResponseLogBlackList } from "../constants/index.js";
 import AuthModule from "../service/auth/index.js";
 import asyncLocalStorage from "../util/asyncStorage.js";
 import { randomId } from "../util/index.js";
@@ -15,12 +15,19 @@ export const wrapper = (fn) => async (req, res) => {
   const startTime = Date.now();
   asyncLocalStorage
     .run(txnId, async () => {
+      if (!ApiRequestLogBlackList.includes(api)) LogModule.log({
+        data: JSON.stringify({ body, locals }),
+        key1: api,
+        key2: "apiRequest",
+        txnId,
+      });
       return fn({ body, locals });
     })
     .then((response) => {
-      LogModule.log({
+      if (!ApiResponseLogBlackList.includes(api)) LogModule.log({
         data: JSON.stringify(response),
         key1: api,
+        key2: "apiResponse",
         metric: Date.now() - startTime,
         txnId,
       });
