@@ -18,13 +18,17 @@ const log = ({
 }
 
 const error = ({
-    data,
+    error,
+    message,
+    stack,
     key1,
     key2,
     txnId
 }) => {
     return addDocument(LOG_TYPES.ERROR, {
-        data,
+        error,
+        message,
+        stack,
         key1,
         key2,
         txnId
