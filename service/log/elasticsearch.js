@@ -28,7 +28,7 @@ const getDateStamp = date => date.toLocaleString('sv').split(' ')[0];
 
 const getIndexName = (type, dateStamp) => {
     const DateStamp = dateStamp ?? getDateStamp(new Date());
-    console.log(date.toLocaleString('sv'), DateStamp)
+    console.log((new Date).toLocaleString('sv'), DateStamp)
     return 'w-' + type + '-' + DateStamp;
 }
 
