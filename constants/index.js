@@ -45,7 +45,11 @@ export const DataTypes = {
 }
 
 export const ApiRequestLogBlackList = [
-    ''
+    '/api/auth/user/login',
+    '/api/auth/organiser/login',
+    '/api/auth/admin/login',
+    '/api/auth/organiser/resetPassword',
+    '/api/auth/admin/resetPassword',
 ]
 
 export const ApiResponseLogBlackList = [

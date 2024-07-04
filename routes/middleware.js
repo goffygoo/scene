@@ -15,8 +15,8 @@ export const wrapper = (fn) => async (req, res) => {
   const startTime = Date.now();
   asyncLocalStorage
     .run(txnId, async () => {
-      if (!ApiRequestLogBlackList.includes(api)) LogModule.log({
-        data: JSON.stringify({ body, locals }),
+      LogModule.log({
+        data: ApiRequestLogBlackList.includes(api) ? "masked" : JSON.stringify({ body, locals }),
         key1: api,
         key2: "apiRequest",
         txnId,
@@ -24,8 +24,8 @@ export const wrapper = (fn) => async (req, res) => {
       return fn({ body, locals });
     })
     .then((response) => {
-      if (!ApiResponseLogBlackList.includes(api)) LogModule.log({
-        data: JSON.stringify(response),
+      LogModule.log({
+        data: ApiResponseLogBlackList.includes(api) ? "masked" : JSON.stringify(response),
         key1: api,
         key2: "apiResponse",
         metric: Date.now() - startTime,
