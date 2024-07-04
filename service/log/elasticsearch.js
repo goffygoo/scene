@@ -143,6 +143,7 @@ export const createIndexes = async (forNextDay) => {
     const date = new Date();
     date.setDate(date.getDate() + 1);
     const dateStamp = forNextDay ? getDateStamp(dateStamp) : undefined;
+    console.log("=======",dateStamp)
     await catchErr(async () => {
         await createLogIndex(dateStamp);
     });
