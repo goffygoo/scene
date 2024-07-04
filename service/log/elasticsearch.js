@@ -28,6 +28,7 @@ const getDateStamp = date => date.toLocaleString('sv').split(' ')[0];
 
 const getIndexName = (type, dateStamp) => {
     const DateStamp = dateStamp ?? getDateStamp(new Date());
+    console.log(date.toLocaleString('sv'), DateStamp)
     return 'w-' + type + '-' + DateStamp;
 }
 
@@ -143,7 +144,6 @@ export const createIndexes = async (forNextDay) => {
     const date = new Date();
     date.setDate(date.getDate() + 1);
     const dateStamp = forNextDay ? getDateStamp(dateStamp) : undefined;
-    console.log("=======",dateStamp)
     await catchErr(async () => {
         await createLogIndex(dateStamp);
     });
