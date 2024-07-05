@@ -70,8 +70,7 @@ const getFilters = labels => {
     return hydratedA + " AND " + hydratedB;
 }
 
-const POST = async ({ body, locals }) => {
-    // const cityKey = locals.cityKey;
+const POST = async ({ body }) => {
     const { query = "", labels, cityKey } = body;
     const index = labels?.index;
     if (index === 'venue') {

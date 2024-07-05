@@ -1,5 +1,7 @@
 import config from "../../../constants/config.js";
+import asyncLocalStorage from "../../../util/asyncStorage.js";
 import { httpRequest } from "../../../util/index.js";
+import LogModule from "../../log/index.js";
 
 const { SEARCH_ENGINE, MEILISEARCH_SECRET_KEY } = config;
 
@@ -8,6 +10,17 @@ const searchConfig = {
         Authorization: `Bearer ${MEILISEARCH_SECRET_KEY}`
     }
 };
+
+const log = async (data, key2, metric) => {
+    const txnId = asyncLocalStorage.getStore();
+    LogModule.log({
+        data: JSON.stringify(data),
+        key1: 'msQueries',
+        key2,
+        txnId,
+        metric,
+    })
+}
 
 const addOrReplace = async (data, index) => {
     return httpRequest(
@@ -60,7 +73,8 @@ const searchQuery = async ({ query, filter, sort, limit = 20 }, index) => {
 }
 
 const multiSearchQuery = async (queries) => {
-    return httpRequest(
+    const startTime = Date.now();
+    const result = await httpRequest(
         "post",
         `${SEARCH_ENGINE}/multi-search`,
         {
@@ -68,6 +82,8 @@ const multiSearchQuery = async (queries) => {
         },
         searchConfig
     );
+    log({ queries, result },  + "multiSearchQuery", Date.now() - startTime);
+    return result;
 }
 
 
