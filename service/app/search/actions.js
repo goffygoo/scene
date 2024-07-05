@@ -82,7 +82,7 @@ const multiSearchQuery = async (queries) => {
         },
         searchConfig
     );
-    log({ queries, result },  + "multiSearchQuery", Date.now() - startTime);
+    log({ queries, result }, "multiSearchQuery", Date.now() - startTime);
     return result;
 }
 
