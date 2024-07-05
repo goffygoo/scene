@@ -23,43 +23,56 @@ const log = async (data, key2, metric) => {
 }
 
 const addOrReplace = async (data, index) => {
-    return httpRequest(
+    const startTime = Date.now();
+    const result = await httpRequest(
         "post",
         `${SEARCH_ENGINE}/indexes/${index}/documents`,
         data,
         searchConfig
     );
+    log({ data, result }, index + ".addOrReplace", Date.now() - startTime);
+    return result;
 }
 
 const addOrUpdate = async (data, index) => {
-    return httpRequest(
+    const startTime = Date.now();
+    const result = await httpRequest(
         "put",
         `${SEARCH_ENGINE}/indexes/${index}/documents`,
         data,
         searchConfig
     );
+    log({ data, result }, index + ".addOrUpdate", Date.now() - startTime);
+    return result;
 }
 
 const getDocumentById = async (id, index) => {
-    return httpRequest(
+    const startTime = Date.now();
+    const result = await httpRequest(
         "get",
         `${SEARCH_ENGINE}/indexes/${index}/documents/${id}`,
         {},
         searchConfig
     );
+    log({ id, result }, index + ".get", Date.now() - startTime);
+    return result;
 }
 
 const deleteDocumentById = async (id, index) => {
-    return httpRequest(
+    const startTime = Date.now();
+    const result = await httpRequest(
         "delete",
         `${SEARCH_ENGINE}/indexes/${index}/documents/${id}`,
         {},
         searchConfig
     );
+    log({ id, result }, index + ".delete", Date.now() - startTime);
+    return result;
 }
 
 const searchQuery = async ({ query, filter, sort, limit = 20 }, index) => {
-    return httpRequest(
+    const startTime = Date.now();
+    const response = await httpRequest(
         "post",
         `${SEARCH_ENGINE}/indexes/${index}/search`,
         {
@@ -70,6 +83,9 @@ const searchQuery = async ({ query, filter, sort, limit = 20 }, index) => {
         },
         searchConfig
     );
+    const result = response.hits;
+    log({ data: { query, filter, sort, limit }, result }, index + ".searchQuery", Date.now() - startTime);
+    return result;
 }
 
 const multiSearchQuery = async (queries) => {

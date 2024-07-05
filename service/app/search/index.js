@@ -2,8 +2,6 @@ import { eventTags, eventTagsSpecial, timeTags, venueTags } from "../../../const
 import VenueMS from "./model/Venue.js";
 import EventMS from "./model/Event.js";
 import { getIndexKey, getVenueAndEvents } from "./util.js";
-import Venue from "../../../model/Venue.js";
-import Event from "../../../model/Event.js";
 
 const getLabels = async () => {
     return [
