@@ -93,7 +93,7 @@ const POST = async ({ body }) => {
             cityKey
         );
         const venueIds = venues.map(v => v.id);
-        const mappedEvents = await EventMS.searchQuery({
+        const mappedEvents = venueIds.length === 0 ? [] : await EventMS.searchQuery({
             filter: hydrateTags(venueIds, 'venueId'),
             sort: ["boost:desc"],
         }, cityKey);
