@@ -94,7 +94,7 @@ const resolveIssue = async (issueId) => {
 
 const replyOnIssue = async (issueId, message) => {
     const issue = await Issue.findById(issueId);
-    if (issue) throw Error('Invalid Issue Id');
+    if (!issue) throw Error('Invalid Issue Id');
     await HelpChat.create({
         issueId,
         message,
