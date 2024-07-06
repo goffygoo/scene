@@ -39,13 +39,26 @@ const getGenders = async () => {
   return Object.values(GENDER);
 };
 const getAppConfig = async ({ body, locals }) => {
-  const { userId } = locals.userData;
+  const {
+    bundleVersion,
+    device,
+    appVersion,
+    deviceId,
+    userData,
+  } = locals;
+  const userId = userData?.userId;
   const { city, fcmToken } = body;
   const events = CacheModule.appConfig.getTopEvents(city);
   const venues = CacheModule.appConfig.getTopVenues(city);
-  if (fcmToken && userId)
-    await CommsModule.notification.addFCMToken(userId, fcmToken);
-  return { events, venues };
+  const currentDeviceId = await CommsModule.device.upsertDetails({
+    device,
+    appVersion,
+    deviceId,
+    fcmToken,
+    bundleVersion,
+    userId
+  });
+  return { events, venues, currentDeviceId };
 };
 
 export default {

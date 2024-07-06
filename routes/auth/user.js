@@ -1,6 +1,6 @@
 import express from "express";
 import Module from '../../service/auth/user.js';
-import { validateSchema, verifyAccessToken, wrapper } from "../middleware.js";
+import { parseAppConfig, validateSchema, verifyAccessToken, wrapper } from "../middleware.js";
 import { GENDER } from "../../constants/index.js";
 
 const updateProfileSchema = {
@@ -37,8 +37,8 @@ const router = express.Router();
 
 router.post('/login', wrapper(Module.service.login));
 router.post('/newAccessToken', wrapper(Module.service.newAccessToken));
-router.post('/verifyOtp', wrapper(Module.service.verifyOtp));
-router.post('/googleLogin', wrapper(Module.service.googleLogin));
+router.post('/verifyOtp', parseAppConfig, wrapper(Module.service.verifyOtp));
+router.post('/googleLogin', parseAppConfig, wrapper(Module.service.googleLogin));
 router.post(
     '/updateProfile',
     // validateSchema(updateProfileSchema),
