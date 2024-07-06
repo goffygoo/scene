@@ -1,3 +1,4 @@
+import { DataTypes } from "../../../../constants/index.js";
 import db from "../../../../util/db.js";
 
 const query = async (params) => {
