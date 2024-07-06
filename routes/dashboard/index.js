@@ -6,6 +6,7 @@ import feature from "./feature.js";
 import appConfig from "./appConfig.js";
 import event from "./event.js";
 import query from "./query.js";
+import support from "./support.js";
 import { verifySuperAdmin } from "../middleware.js";
 
 const router = express.Router();
@@ -16,7 +17,6 @@ router.use("/feature", feature);
 router.use("/appConfig", appConfig);
 router.use("/event", event);
 router.use("/query", verifySuperAdmin, query);
-
-
+router.use("/support", support);
 
 export default router;

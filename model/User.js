@@ -34,6 +34,9 @@ const Schema = new mongoose.Schema({
   },
   tickets: {
     type: [{ type: ObjectId, ref: "Ticket" }],
+  },
+  devices: {
+    type: [{ type: ObjectId, ref: "DeviceData" }],
     default: [],
   },
 });
