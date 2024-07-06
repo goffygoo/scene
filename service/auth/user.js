@@ -28,8 +28,14 @@ const login = async ({ body }) => {
   await CommsModule.mail.sendOtpMail(email, OTP);
 };
 
-const verifyOtp = async ({ body }) => {
+const verifyOtp = async ({ body, locals }) => {
   const { otp, email } = body;
+  const {
+    bundleVersion,
+    device,
+    appVersion,
+    deviceId,
+  } = locals;
   const otpObject = await Otp.findOne({ email });
   if (!otpObject || otpObject.value !== otp) throw Error('Invalid Email or OTP');
   await Otp.deleteOne({ email });
@@ -62,6 +68,13 @@ const verifyOtp = async ({ body }) => {
     userId,
     email,
   });
+  await CommsModule.device.upsertDetails({
+    bundleVersion,
+    device,
+    appVersion,
+    deviceId,
+    userId,
+  });
   return {
     refreshToken,
     accessToken,
@@ -70,8 +83,14 @@ const verifyOtp = async ({ body }) => {
   };
 };
 
-const googleLogin = async ({ body }) => {
+const googleLogin = async ({ body, locals }) => {
   const { code } = body;
+  const {
+    bundleVersion,
+    device,
+    appVersion,
+    deviceId,
+  } = locals;
   const googleResponse = await httpRequest("post", GOOGLE_TOKEN_URL, {
     code,
     client_id: GOOGLE_CLIENT_ID_ANDROID,
@@ -105,6 +124,13 @@ const googleLogin = async ({ body }) => {
   const accessToken = generateAccessToken({
     userId,
     email,
+  });
+  await CommsModule.device.upsertDetails({
+    bundleVersion,
+    device,
+    appVersion,
+    deviceId,
+    userId,
   });
   return {
     refreshToken,
