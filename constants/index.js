@@ -18,6 +18,8 @@ export const HEADERS = {
     AUTHORIZATION: "authorization",
     CITY_KEY: "x-citykey",
     BUNDLE_VERSION: "x-bundleversion",
+    APP_VERSION: "x-appversion",
+    DEVICE_ID: "x-deviceid",
     DEVICE: "x-device",
 };
 

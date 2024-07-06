@@ -1,5 +1,5 @@
 import admin from 'firebase-admin';
-import UserData from '../../model/UserData.js';
+import User from '../../model/User.js';
 
 const pushToUser = async (userId) => {
     const userData = await UserData.findOne({ userId });
@@ -34,6 +34,4 @@ const addFCMToken = async (userId, fcmToken) => {
 }
 
 export default {
-    pushToUser,
-    addFCMToken
 }

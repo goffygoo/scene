@@ -36,6 +36,11 @@ const Schema = new mongoose.Schema({
     type: [{ type: ObjectId, ref: "Ticket" }],
     default: [],
   },
+  devices: {
+    type: ObjectId,
+    required: true,
+    ref: "DeviceData"
+  },
 });
 
 export default modelWrapper(mongoose.model("User", Schema));
