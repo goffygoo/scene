@@ -52,6 +52,7 @@ const getOpenIssues = async () => {
 const getAllIssues = async (userId) => {
     return Issue.find({
         assignedTo: userId,
+        resolved: false,
     });
 }
 
@@ -68,7 +69,7 @@ const getMessages = async (issueId, fromTimestamp) => {
     const issue = await Issue.findById(issueId);
     if (!issue) throw Error('Invalid Issue Id');
     const messages = await getMessagesByIssueId(issueId, fromTimestamp);
-    const user = await User.findAndSelect(
+    const user = await User.findOneAndSelect(
         {
             _id: issue.userId
         },
@@ -84,6 +85,18 @@ const getMessages = async (issueId, fromTimestamp) => {
     }
 }
 
+const resolveIssue = async (issueId) => {
+    return Issue.findByIdAndUpdate(issueId, {
+        resolved: true,
+    })
+}
+
+const replyOnIssue = async (issueId, message) => {
+    return Issue.findByIdAndUpdate(issueId, {
+        resolved: true,
+    })
+}
+
 export default {
     sendMessageByUser,
     getMessagesByUserId,
@@ -91,5 +104,7 @@ export default {
     getOpenIssues,
     getAllIssues,
     assignIssue,
-    getMessages
+    getMessages,
+    resolveIssue,
+    replyOnIssue,
 }

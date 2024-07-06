@@ -23,11 +23,23 @@ const getMessagesForIssue = async ({ body }) => {
   return HelpModule.support.getMessages(issueId, fromTimeStamp);
 };
 
+const resolveIssue = async ({ body }) => {
+  const { issueId } = body;
+  return HelpModule.support.resolveIssue(issueId);
+};
+
+const replyOnIssue = async ({ body }) => {
+  const { issueId, message } = body;
+  return HelpModule.support.replyOnIssue(issueId, message);
+};
+
 export default {
   service: {
     getOpenIssues,
     assignIssue,
     getAllIssues,
     getMessagesForIssue,
+    resolveIssue,
+    replyOnIssue,
   },
 };

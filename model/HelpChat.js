@@ -15,11 +15,6 @@ const Schema = new mongoose.Schema({
     isUser: {
         type: Boolean,
         required: true,
-    },
-    expireAt: {
-        type: Date,
-        expires: '30d',
-        default: Date.now
     }
 }, { timestamps: true });
 
