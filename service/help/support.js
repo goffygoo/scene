@@ -1,6 +1,7 @@
 import HelpChat from "../../model/HelpChat.js";
 import Issue from "../../model/Issue.js"
 import User from "../../model/User.js";
+import CommsModule from "../comms/index.js";
 
 const sendMessageByUser = async (userId, message) => {
     const issue = await Issue.findOne({
@@ -92,9 +93,15 @@ const resolveIssue = async (issueId) => {
 }
 
 const replyOnIssue = async (issueId, message) => {
-    return Issue.findByIdAndUpdate(issueId, {
-        resolved: true,
-    })
+    const issue = await Issue.findById(issueId);
+    if (issue) throw Error('Invalid Issue Id');
+    await HelpChat.create({
+        issueId,
+        message,
+        isUser: false,
+    });
+    const userId = issue.userId.toString();
+    await CommsModule.notification.pushToUser.helpChat(userId, { message });
 }
 
 export default {
