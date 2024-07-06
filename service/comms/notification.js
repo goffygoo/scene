@@ -5,7 +5,8 @@ import { FCM_EVENTS } from '../../constants/index.js';
 const pushToUserWithData = async ({ userId, title, body, data }) => {
     const user = await User.findOneAndPopulate({ _id: userId }, "devices");
     const devices = user.devices;
-    const tokens = devices.map(device => device.fcmToken);
+    const tokensArr = devices.map(device => device.fcmToken);
+    const tokens = [...(new Set(tokensArr))];
     const batchResponse = await admin.messaging().sendEachForMulticast({
         tokens,
         notification: {
@@ -14,15 +15,15 @@ const pushToUserWithData = async ({ userId, title, body, data }) => {
         },
         data,
     });
-    const cleanDevices = [];
+    const crashedDevice = [];
     for (let i = 0; i < batchResponse.responses.length; i++) {
-        if (!batchResponse.responses[i].error) {
-            cleanDevices.push(devices[i]._id);
+        if (batchResponse?.responses[i]?.error) {
+            crashedDevice.push(devices[i]._id);
         }
     }
-    if (cleanDevices.length != tokens.length) {
+    if (crashedDevice.length) {
         await User.findByIdAndUpdate(user._id, {
-            devices: cleanDevices
+            $pull: { devices: { $in: crashedDevice } }
         })
     }
 }
