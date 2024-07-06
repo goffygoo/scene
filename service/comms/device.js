@@ -18,6 +18,13 @@ const upsertDetails = async ({
             bundleVersion,
         });
         currentDeviceId = deviceData._id.toString();
+    } else {
+        await DeviceData.findByIdAndUpdate(deviceId, {
+            device,
+            appVersion,
+            fcmToken,
+            bundleVersion,
+        });
     }
     if (userId) {
         await User.findByIdAndUpdate(userId, {

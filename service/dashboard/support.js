@@ -1,4 +1,3 @@
-import User from "../../model/User.js";
 import HelpModule from "../help/index.js";
 
 const getOpenIssues = async () => {

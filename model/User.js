@@ -34,12 +34,10 @@ const Schema = new mongoose.Schema({
   },
   tickets: {
     type: [{ type: ObjectId, ref: "Ticket" }],
-    default: [],
   },
   devices: {
-    type: ObjectId,
-    required: true,
-    ref: "DeviceData"
+    type: [{ type: ObjectId, ref: "DeviceData" }],
+    default: [],
   },
 });
 

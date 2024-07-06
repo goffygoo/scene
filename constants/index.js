@@ -57,3 +57,7 @@ export const ApiRequestLogBlackList = [
 export const ApiResponseLogBlackList = [
     ''
 ]
+
+export const FCM_EVENTS = {
+    HELP_CHAT: "helpchat",
+};
