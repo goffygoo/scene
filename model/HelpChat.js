@@ -15,7 +15,11 @@ const Schema = new mongoose.Schema({
     isUser: {
         type: Boolean,
         required: true,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
-}, { timestamps: true });
+});
 
 export default modelWrapper(mongoose.model("HelpChat", Schema));

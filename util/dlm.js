@@ -1,7 +1,7 @@
 import DistributedLock from "../model/DistributedLock.js";
 
-const ApiTimeOut = 2000;
-const RetryTime = 2000;
+const ApiTimeOut = 30000;
+const RetryTime = 1000;
 
 const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -31,13 +31,13 @@ const releaseLock = async (key) => {
     await DistributedLock.deleteOne({ key });
 }
 
-const DistributedLockManager = async (key, fn, retry = true) => {
+const DistributedLockManager = async (key, fn, retires) => {
     const lock = await accquireLock(key);
-    if (!lock && !retry) {
+    if (!lock && retires === 0) {
         throw Error('Deadlock !!!');
     } else if (!lock) {
         await sleep(RetryTime);
-        return DistributedLock(key, fn, false);
+        return DistributedLockManager(key, fn, retires - 1);
     } else {
         try {
             const response = await timeLimitedCall(fn);
@@ -50,6 +50,6 @@ const DistributedLockManager = async (key, fn, retry = true) => {
     }
 } 
 
-export default async function (key, fn) {
-    return DistributedLockManager(key, fn);
+export default async function (key, fn, retires = 1) {
+    return DistributedLockManager(key, fn, retires);
 };

@@ -79,7 +79,10 @@ const verifyOtp = async ({ body, locals }) => {
     refreshToken,
     accessToken,
     userId,
-    ...(user && user.profileComplete && { profile: user.profile }),
+    ...(user && {
+      profileComplete: user.profileComplete,
+      profile: user.profile
+    }),
   };
 };
 
@@ -136,6 +139,10 @@ const googleLogin = async ({ body, locals }) => {
     refreshToken,
     accessToken,
     userId,
+    ...(user && {
+      profileComplete: user.profileComplete,
+      profile: user.profile
+    }),
   };
 };
 
