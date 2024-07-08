@@ -22,7 +22,7 @@ const forgotPassword = async ({ body }) => {
     email,
     value: OTP,
   });
-  await CommsModule.mail.sendOtpResetPassword(email, OTP);
+  CommsModule.mail.sendOtpResetPassword(email, OTP);
 };
 
 const verifyOtp = async ({ body }) => {

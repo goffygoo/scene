@@ -23,7 +23,7 @@ const sendMailToUser = async (email, subject, html) => {
             subject,
             html,
         };
-       await transporter.sendMail(mailOptions, );
+        await transporter.sendMail(mailOptions); 
     } catch (_e) {}
 };
 

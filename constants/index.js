@@ -38,7 +38,7 @@ export const LOG_TYPES = {
     FE_LOG: "felog",
 }
 
-export const enableESLogging = true;
+export const enableESLogging = (process.env.NODE_ENV === 'production');
 
 export const DataTypes = {
     string: "string",
@@ -60,4 +60,16 @@ export const ApiResponseLogBlackList = [
 
 export const FCM_EVENTS = {
     HELP_CHAT: "helpchat",
+};
+
+export const ORDER_STATUS = {
+    CREATED: "created",
+    SUCCESS: "success",
+    FAILED: "failed",
+    REFUNDED: "refunded",
+};
+
+export const PG_PAYMENT_STATUS = {
+    CAPTURED: "captured",
+    FAILED: "failed",
 };

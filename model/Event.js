@@ -24,6 +24,10 @@ const Schema = new mongoose.Schema({
   price: {
     type: Number,
     required: true,
+    validate : {
+      validator : Number.isInteger,
+      message   : '{VALUE} is not an integer value'
+    }
   },
   showAds: {
     type: Boolean,
