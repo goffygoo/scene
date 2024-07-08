@@ -14,6 +14,9 @@ const Schema = new mongoose.Schema({
     appVersion: {
         type: String,
     },
+    appxCity: {
+        type: String,
+    },
 }, { timestamps: true });
 
 export default modelWrapper(mongoose.model("DeviceData", Schema));

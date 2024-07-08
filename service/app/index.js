@@ -56,7 +56,8 @@ const getAppConfig = async ({ body, locals }) => {
     deviceId,
     fcmToken,
     bundleVersion,
-    userId
+    userId,
+    city,
   });
   return { events, venues, currentDeviceId };
 };

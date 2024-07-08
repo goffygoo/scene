@@ -7,23 +7,26 @@ const upsertDetails = async ({
     deviceId,
     fcmToken,
     bundleVersion,
-    userId
+    userId,
+    city,
 }) => {
     let currentDeviceId = deviceId;
     if (!deviceId) {
         const deviceData = await DeviceData.create({
-            device,
-            appVersion,
-            fcmToken,
-            bundleVersion,
+            ...(device && { device }),
+            ...(appVersion && { appVersion }),
+            ...(fcmToken && { fcmToken }),
+            ...(bundleVersion && { bundleVersion }),
+            ...(city && { appxCity: city }),
         });
         currentDeviceId = deviceData._id.toString();
     } else {
         await DeviceData.findByIdAndUpdate(deviceId, {
-            device,
-            appVersion,
-            fcmToken,
-            bundleVersion,
+            ...(device && { device }),
+            ...(appVersion && { appVersion }),
+            ...(fcmToken && { fcmToken }),
+            ...(bundleVersion && { bundleVersion }),
+            ...(city && { appxCity: city }),
         });
     }
     if (userId) {
