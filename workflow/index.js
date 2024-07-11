@@ -22,7 +22,7 @@ const run = async () => {
         const params = argv[4] ? JSON.parse(argv[4]) : {};
         const workflow = await import(`./${workflowName}.js`);
         const fn = workflow.default;
-        // await initService();
+        await initService();
         await fn(params);
     } catch (_e) {
         success = false;
