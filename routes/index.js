@@ -26,7 +26,7 @@ router.get("/model", async (req, res) => {
 
 router.get("/ms", async (req, res) => {
   const { index } = req.query;
-  await searchQuery({query: ''}, index);
+  const data = await searchQuery({query: ''}, index);
   res.send(data);
 });
 
