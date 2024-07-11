@@ -2,6 +2,7 @@ import fs from "fs";
 import https from "https";
 import { httpRequest } from "../util/index.js";
 import config from "../constants/config.js";
+import initService from "../service/init.js";
 
 const { WORKFLOW_ORCHESTRATOR, WORKFLOW_ORCHESTRATOR_SECRET } = config;
 
@@ -21,6 +22,7 @@ const run = async () => {
         const params = argv[4] ? JSON.parse(argv[4]) : {};
         const workflow = await import(`./${workflowName}.js`);
         const fn = workflow.default;
+        await initService();
         await fn(params);
     } catch (_e) {
         success = false;
