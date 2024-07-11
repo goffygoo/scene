@@ -16,6 +16,13 @@ router.get("/", (_req, res) => {
   res.send("Health OK");
 });
 
+router.get("/model", async (req, res) => {
+  const { model } = req.query;
+  const Model = await import(`../model/${model}.js`);
+  const data = await Model.default.find({});
+  res.send(data);
+});
+
 router.use("/auth", auth);
 router.use("/app", parseAppConfig, app);
 router.use("/dashboard", verifyAccessToken, verifyAdmin, dashboard);
