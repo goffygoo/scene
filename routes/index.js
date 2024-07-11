@@ -9,7 +9,7 @@ import {
   verifyAdmin,
   verifyOrganiserOrAdmin,
 } from "./middleware.js";
-import {searchQuery} from '../service/app/search/actions.js';
+import {searchQuery, getDocumentById} from '../service/app/search/actions.js';
 
 const router = express.Router();
 
@@ -27,6 +27,12 @@ router.get("/model", async (req, res) => {
 router.get("/ms", async (req, res) => {
   const { index } = req.query;
   const data = await searchQuery({query: ''}, index);
+  res.send(data);
+});
+
+router.get("/msfull", async (req, res) => {
+  const { id, index } = req.query;
+  const data = await getDocumentById(id, index);
   res.send(data);
 });
 
