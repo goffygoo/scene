@@ -38,9 +38,7 @@ const getMessagesByUserId = async (userId, fromTimestamp) => {
         resolved: false,
     });
     let issueId = issue?._id.toString();
-    if (!issueId) return {
-        messages: [],
-    };
+    if (!issueId) return [];
     return getMessagesByIssueId(issueId, fromTimestamp);
 }
 
