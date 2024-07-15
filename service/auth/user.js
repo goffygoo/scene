@@ -25,7 +25,7 @@ const login = async ({ body }) => {
     email,
     value: OTP,
   });
-  await CommsModule.mail.sendOtpMail(email, OTP);
+  CommsModule.mail.sendOtpMail(email, OTP);
 };
 
 const verifyOtp = async ({ body, locals }) => {

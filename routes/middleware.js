@@ -42,6 +42,7 @@ export const wrapper = (fn) => async (req, res) => {
         metric: Date.now() - startTime,
         txnId,
       });
+      if (process.env.NODE_ENV !== 'production') console.log(err);
       return res.sendStatus(400);
     });
 };

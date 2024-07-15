@@ -1,6 +1,6 @@
 import DistributedLock from "../model/DistributedLock.js";
 
-const ApiTimeOut = 30000;
+const ApiTimeOut = 29000;
 const RetryTime = 1000;
 
 const sleep = (ms) => {
@@ -8,14 +8,17 @@ const sleep = (ms) => {
 }
 
 const timeLimitedCall = async (fn) => {
-    const [timeout, value] = await Promise.all([
-        setTimeout(() => {
-            throw Error("Killed for timeout")  
-        }, ApiTimeOut),
-        fn()
-    ]);
-    clearTimeout(timeout);
-    return value;
+    const timeout = setTimeout(() => {
+        throw Error("Killed for timeout")
+    }, ApiTimeOut);
+    try {
+        const value = await fn();
+        clearTimeout(timeout);
+        return value;
+    } catch (err) {
+        clearTimeout(timeout);
+        throw err;
+    }
 }
 
 const accquireLock = async (key) => {
@@ -48,7 +51,7 @@ const DistributedLockManager = async (key, fn, retires) => {
             throw err;
         }
     }
-} 
+}
 
 export default async function (key, fn, retires = 1) {
     return DistributedLockManager(key, fn, retires);
