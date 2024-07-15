@@ -16,12 +16,9 @@ const createOrder = async ({ body, locals }) => {
     }
 }
 
-const confirmPayment = async ({ body, locals }) => {
-    const { pgPaymentId } = body;
-    const { userData } = locals;
-    const { userId } = userData;
-
-
+const confirmPayment = async ({ body }) => {
+    const { pgPaymentId, checkPaymentPre } = body;
+    return OrderModule.confirmPayment(pgPaymentId, checkPaymentPre);
 }
 
 export default {

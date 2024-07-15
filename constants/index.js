@@ -21,6 +21,7 @@ export const HEADERS = {
     APP_VERSION: "x-appversion",
     DEVICE_ID: "x-deviceid",
     DEVICE: "x-device",
+    RAZORPAY_SIGNATURE: "x-razorpay-signature",
 };
 
 export const MODEL_INDEX = {

@@ -7,9 +7,6 @@ const PaymentInstance = new Razorpay({
 });
 
 const createPaymentOrder = async ({ userId, orderId, amount }) => {
-    return {
-        id: Math.random().toString(),
-    };
 	return PaymentInstance.orders.create({
 		amount: +amount * 100,
 		currency: "INR",
@@ -25,12 +22,6 @@ const getPaymentOrder = async (orderId) => {
 };
 
 const checkPaymentStatus = async (paymentId) => {
-    return {
-        notes: {
-            orderId: "0.11294142324972323"
-        },
-        status: ""
-    };
 	return PaymentInstance.payments.fetch(paymentId);
 };
 
