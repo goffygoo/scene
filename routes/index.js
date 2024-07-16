@@ -9,31 +9,11 @@ import {
   verifyAdmin,
   verifyOrganiserOrAdmin,
 } from "./middleware.js";
-import {searchQuery, getDocumentById} from '../service/app/search/actions.js';
 
 const router = express.Router();
 
 router.get("/", (_req, res) => {
   res.send("Health OK");
-});
-
-router.get("/model", async (req, res) => {
-  const { model } = req.query;
-  const Model = await import(`../model/${model}.js`);
-  const data = await Model.default.find({});
-  res.send(data);
-});
-
-router.get("/ms", async (req, res) => {
-  const { index } = req.query;
-  const data = await searchQuery({query: ''}, index);
-  res.send(data);
-});
-
-router.get("/msfull", async (req, res) => {
-  const { id, index } = req.query;
-  const data = await getDocumentById(id, index);
-  res.send(data);
 });
 
 router.use("/auth", auth);
