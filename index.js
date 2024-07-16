@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import _db from "./util/db.js";
 import router from "./routes/index.js";
+import webhooks from "./routes/webhooks/index.js";
 import initServices from "./service/init.js";
 import { applicationDefault, initializeApp } from 'firebase-admin/app';
 import https from "https";
@@ -13,6 +14,8 @@ initializeApp({ credential: applicationDefault() });
 const run = async () => {
 	const app = express();
 	const PORT = process.env.PORT || 5000;
+
+	app.use("/webhooks", webhooks);
 
 	app.use(express.json({ limit: "1mb", extended: true }));
 	app.use(express.urlencoded({ limit: "1mb", extended: true }));
