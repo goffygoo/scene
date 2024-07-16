@@ -23,7 +23,8 @@ router.use(express.json({
 
 router.post('/', async (req, res) => {
     res.sendStatus(200);
-    const checkPayment = req.body.payload.payment.entity;
+    const checkPayment = req.body.payload?.payment.entity;
+    if (!checkPayment) return;
     const txnId = randomId();
     const api = req.originalUrl;
     const startTime = Date.now();
