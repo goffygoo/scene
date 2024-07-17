@@ -5,7 +5,7 @@ import { processPassword } from "../../../auth/utils.js";
 const query = async (params) => {
   const { email, password } = params;
 
-  const data = await Organiser.createOrReplaceOne({
+  const data = await Organiser.create({
     email,
     password: processPassword(password),
   });
