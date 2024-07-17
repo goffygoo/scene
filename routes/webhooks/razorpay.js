@@ -62,7 +62,6 @@ router.post('/', async (req, res) => {
                 txnId,
             });
             if (process.env.NODE_ENV !== 'production') console.log(err);
-            return res.sendStatus(400);
         });
 })
 
