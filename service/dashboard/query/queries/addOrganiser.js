@@ -1,11 +1,11 @@
 import { DataTypes } from "../../../../constants/index.js";
-import venue from "../../../app/search/model/Venue.js";
+import Organiser from "../../../../model/Organiser.js";
 import { processPassword } from "../../../auth/utils.js";
 
 const query = async (params) => {
   const { email, password } = params;
 
-  const data = await venue.createOrReplaceOne({
+  const data = await Organiser.create({
     email,
     password: processPassword(password),
   });
