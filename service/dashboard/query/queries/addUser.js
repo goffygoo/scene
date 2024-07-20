@@ -1,10 +1,10 @@
 import { DataTypes } from "../../../../constants/index.js";
-import Organiser from "../../../../model/Organiser.js";
+import User from "../../../../model/User.js";
 import AuthModule from "../../../auth/index.js";
 
 const query = async (params) => {
   const { email, password } = params;
-  await Organiser.create({
+  await User.create({
     email,
     password: AuthModule.processPassword(password),
   });
@@ -13,7 +13,7 @@ const query = async (params) => {
 
 export default {
   query,
-  title: "Add Organiser Account",
+  title: "Add User Account",
   params: {
     email: DataTypes.string,
     password: DataTypes.string
