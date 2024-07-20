@@ -23,7 +23,11 @@ const createHelper = async ({ eventId, amount, userId }) => {
     eventId,
     amount,
   });
-  const paymentOrder = await PaymentModule.createPaymentOrder(order);
+  const paymentOrder = await PaymentModule.createPaymentOrder({
+      amount,
+      userId,
+      orderId: order._id.toString(),
+  });
   await Order.findByIdAndUpdate(order._id, {
     pgOrderId: paymentOrder.id,
   });
