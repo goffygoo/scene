@@ -9,6 +9,6 @@ const query = async (params) => {
 
 export default {
   query,
-  title: "View content of collection",
+  title: "Delete document of a collection",
   params: { collection: DataTypes.string, id: DataTypes.string },
 };
