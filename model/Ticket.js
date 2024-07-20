@@ -19,4 +19,6 @@ const Schema = new mongoose.Schema({
   },
 });
 
+Schema.index({ user: 1, event: 1 }, { unique: true });
+
 export default modelWrapper(mongoose.model("Ticket", Schema));

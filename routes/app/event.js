@@ -29,8 +29,6 @@ router.get(
 
 router.post("/register", verifyAccessToken, wrapper(Module.service.register));
 
-router.post("/register", verifyAccessToken, wrapper(Module.service.register));
-
 router.get("/tickets", verifyAccessToken, wrapper(Module.service.getTickets));
 
 router.post(

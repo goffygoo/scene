@@ -8,7 +8,7 @@ const query = async (params) => {
     email,
     password: AuthModule.processPassword(password),
   });
-  return data;
+  return { email, success: true };
 };
 
 export default {

@@ -183,6 +183,10 @@ const deleteEvent = async (eventId) => {
 const register = async ({ body, locals }) => {
   const { eventId } = body;
   const { userId } = locals.userData;
+  const event = await getEvent(eventId);
+  if (event.price) {
+    throw "Event is not free";
+  }
   const existingTicket = await Ticket.findOne({ event: eventId, user: userId });
   if (existingTicket) throw "Already Registered";
   const ticket = await Ticket.create({
@@ -205,20 +209,16 @@ const getTickets = async ({ locals }) => {
 };
 
 const scanTicket = async ({ body }) => {
-  const { eventId, ticketId, userId } = body;
+  const { ticketId } = body;
 
   const ticket = await Ticket.findById(ticketId);
 
-  if (ticket.event.toString() !== eventId || userId !== ticket.user.toString())
-    throw "Invalid Ticket";
-
-  if (ticket.scanned) throw "Ticket Already Scanned";
-
-  await Ticket.findByIdAndUpdate(ticketId, { scanned: true });
-
-  const { profile } = await User.findById(userId);
+  if (!ticket) throw "Ticket does not exist";
+  const scanned = ticket.scanned;
+  const { profile } = await User.findById(ticket.user);
   const { name, gender, age } = profile;
-  return { name, gender, age };
+  await Ticket.findByIdAndUpdate(ticketId, { scanned: true });
+  return { name, gender, age, scanned };
 };
 
 export default {
