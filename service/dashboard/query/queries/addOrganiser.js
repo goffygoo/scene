@@ -4,7 +4,7 @@ import AuthModule from "../../../auth/index.js";
 
 const query = async (params) => {
   const { email, password } = params;
-  await Organiser.create({
+  const data = await Organiser.create({
     email,
     password: AuthModule.processPassword(password),
   });
