@@ -9,7 +9,7 @@ const query = async (params) => {
     email,
     password: processPassword(password),
   });
-  return data;
+  return { email, success: true };
 };
 
 export default {
