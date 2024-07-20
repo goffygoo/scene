@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 
 const query = async (params) => {
   const { collection, id } = params;
-  const objectId = mongoose.Types.ObjectId(id);
+  const objectId = mongoose.mongo.ObjectId(id);
   const data = await db.collection(collection).deleteOne({ _id: objectId });
   return data;
 };
