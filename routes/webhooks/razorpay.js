@@ -43,7 +43,7 @@ router.post("/", async (req, res) => {
       return MonetModule.service.confirmPayment({
         body: {
           checkPaymentPre: checkPayment,
-          pgPaymentId: undefined,
+          pgPaymentId: checkPayment.id,
         },
       });
     })
