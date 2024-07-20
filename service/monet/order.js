@@ -3,6 +3,7 @@ import Event from "../../model/Event.js";
 import Order from "../../model/Order.js";
 import Receipt from "../../model/Receipt.js";
 import Ticket from "../../model/Ticket.js";
+import User from "../../model/User.js";
 import dlm from "../../util/dlm.js";
 import PaymentModule from "./payment.js";
 
