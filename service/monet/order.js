@@ -71,30 +71,26 @@ const paymentFailed = async ({ pgPaymentId, orderId }) => {
 const paymentSuccess = async ({ pgPaymentId, orderId }) => {
   const order = await Order.findById(orderId);
   const { userId, eventId } = order;
-  const receipt = await Receipt.findOne({ userId, eventId });
-  if (receipt?.orderId.toString() !== orderId) {
+  const receipt = await Receipt.findOne({ userId, eventId }); 
+  if (receipt && receipt?.orderId?.toString() !== orderId) {
     await refundOrder({ orderId, pgPaymentId });
     return {
       refunded: true,
     };
   }
-
   await Order.findByIdAndUpdate(orderId, {
     status: ORDER_STATUS.SUCCESS,
     pgPaymentId,
   });
-
   await Receipt.create({
     orderId: order._id,
     userId: order.userId,
     eventId: order.eventId,
   });
-
   const ticket = await Ticket.create({
     event: eventId,
     user: userId,
   });
-
   await User.findByIdAndUpdate(userId, {
     $push: { tickets: ticket._id },
   });
