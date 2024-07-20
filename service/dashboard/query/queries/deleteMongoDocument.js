@@ -1,9 +1,11 @@
 import { DataTypes } from "../../../../constants/index.js";
 import db from "../../../../util/db.js";
+import mongoose from "mongoose";
 
 const query = async (params) => {
   const { collection, id } = params;
-  const data = await db.collection(collection).deleteOne({ _id: id });
+  const objectId = mongoose.Types.ObjectId(id);
+  const data = await db.collection(collection).deleteOne({ _id: objectId });
   return data;
 };
 
