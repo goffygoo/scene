@@ -72,7 +72,7 @@ const paymentSuccess = async ({ pgPaymentId, orderId }) => {
   const order = await Order.findById(orderId);
   const { userId, eventId } = order;
   const receipt = await Receipt.findOne({ userId, eventId });
-  if (receipt.orderId.toString() !== orderId) {
+  if (receipt?.orderId.toString() !== orderId) {
     await refundOrder({ orderId, pgPaymentId });
     return {
       refunded: true,
