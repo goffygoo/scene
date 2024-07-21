@@ -30,14 +30,14 @@ const login = async ({ body }) => {
 
 const verifyOtp = async ({ body, locals }) => {
   const { otp, email } = body;
-  const {
-    bundleVersion,
-    device,
-    appVersion,
-    deviceId,
-  } = locals;
+  const { bundleVersion, device, appVersion, deviceId } = locals;
   const otpObject = await Otp.findOne({ email });
-  if (!otpObject || otpObject.value !== otp) throw Error('Invalid Email or OTP');
+  // TODO: remove after playstore publish
+  if (
+    (email !== "testuser@baljeetkode.com" || otp != "1247") &&
+    (!otpObject || otpObject.value !== otp)
+  )
+    throw Error("Invalid Email or OTP");
   await Otp.deleteOne({ email });
   const user = await User.findOne({ email });
   let refreshToken = generateRefreshToken();
@@ -53,13 +53,10 @@ const verifyOtp = async ({ body, locals }) => {
   } else {
     userId = user._id;
     if (!user.refreshToken || user.tokenEAT <= Date.now()) {
-      await User.findByIdAndUpdate(
-        userId,
-        {
-          refreshToken,
-          tokenEAT,
-        }
-      );
+      await User.findByIdAndUpdate(userId, {
+        refreshToken,
+        tokenEAT,
+      });
     } else {
       refreshToken = user.refreshToken;
     }
@@ -81,19 +78,14 @@ const verifyOtp = async ({ body, locals }) => {
     userId,
     ...(user && {
       profileComplete: user.profileComplete,
-      profile: user.profile
+      profile: user.profile,
     }),
   };
 };
 
 const googleLogin = async ({ body, locals }) => {
   const { code } = body;
-  const {
-    bundleVersion,
-    device,
-    appVersion,
-    deviceId,
-  } = locals;
+  const { bundleVersion, device, appVersion, deviceId } = locals;
   const googleResponse = await httpRequest("post", GOOGLE_TOKEN_URL, {
     code,
     client_id: GOOGLE_CLIENT_ID_ANDROID,
@@ -141,7 +133,7 @@ const googleLogin = async ({ body, locals }) => {
     userId,
     ...(user && {
       profileComplete: user.profileComplete,
-      profile: user.profile
+      profile: user.profile,
     }),
   };
 };
