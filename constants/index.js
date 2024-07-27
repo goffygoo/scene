@@ -39,7 +39,7 @@ export const LOG_TYPES = {
     FE_LOG: "felog",
 }
 
-export const enableESLogging = (process.env.NODE_ENV === 'production');
+export const enableESLogging = (process.env.ENABLE_ES_LOGS === '1');
 
 export const DataTypes = {
     string: "string",
