@@ -1,5 +1,8 @@
 ## Server
 
+### Preview
+Live server running on [https://baljeetkode.com/](https://baljeetkode.com/)
+
 ### Firebase setup
 1. Add firebase cred to the path ```constants/google-application-creds.json```
 2. Add .env to root level with file content <br>```GOOGLE_APPLICATION_CREDENTIALS='./constants/google-application-creds.json'```
