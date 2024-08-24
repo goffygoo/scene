@@ -47,8 +47,8 @@ Live server running on [https://baljeetkode.com/](https://baljeetkode.com/)
 3. ```npm start```
 
 ### Other affiliated repos
-* [consumer-mobile](https://github.com/redscool/project-w-client)
-* [provider-mobile](https://github.com/redscool/project-w-client-provider)
-* [dashboard](https://github.com/redscool/project-w-dashboard)
-* [client-web](https://github.com/redscool/project-w-client-web)
+* [consumer-mobile](https://github.com/redscool/scene-client)
+* [provider-mobile](https://github.com/redscool/scene-client-provider)
+* [dashboard](https://github.com/redscool/scene-dashboard)
+* [client-web](https://github.com/redscool/scene-client-web)
 
