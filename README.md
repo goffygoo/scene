@@ -1,7 +1,13 @@
-## Server
+### Design
+Figma design on [https://www.figma.com/design/xRQrqxapbgYoLqmLBedvFF/project-w?node-id=0-1&t=QAhBNdFOhDN6YJqf-1](https://www.figma.com/design/xRQrqxapbgYoLqmLBedvFF/project-w?node-id=0-1&t=QAhBNdFOhDN6YJqf-1)
 
-### Preview
-Live server running on [https://baljeetkode.com/](https://baljeetkode.com/)
+### Other affiliated repos
+* [consumer-mobile](https://github.com/redscool/scene-client)
+* [provider-mobile](https://github.com/redscool/scene-client-provider)
+* [dashboard](https://github.com/redscool/scene-dashboard)
+* [client-web](https://github.com/redscool/scene-client-web)
+
+## Server
 
 ### Firebase setup
 1. Add firebase cred to the path ```constants/google-application-creds.json```
@@ -45,10 +51,4 @@ Live server running on [https://baljeetkode.com/](https://baljeetkode.com/)
 1. Clone the repo
 2. ```npm ci```
 3. ```npm start```
-
-### Other affiliated repos
-* [consumer-mobile](https://github.com/redscool/scene-client)
-* [provider-mobile](https://github.com/redscool/scene-client-provider)
-* [dashboard](https://github.com/redscool/scene-dashboard)
-* [client-web](https://github.com/redscool/scene-client-web)
 
